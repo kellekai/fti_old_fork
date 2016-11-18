@@ -1,0 +1,87 @@
+\documentclass{refrep}
+%%%%%%%%%% TITLE %%%%%%%%%%%
+\title{FTI - Usermanual}
+\author{Leonardo Bautista Gomez}
+\date{November, 2016}
+%%%%%%%%%% CODE FONTS %%%%%%
+\usepackage{ascii}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+\maketitle
+\chapter{Introduction}\label{ch:introduction}
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   
+
+Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   
+
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   
+
+Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer
+\chapter{Multilevel Checkpointing}\label{ch:multilevelcheckpointing}
+\section{L1}\label{sec:l1}
+\section{L2}\label{sec:l2}
+\section{L3}\label{sec:l3}
+\section{L4}\label{sec:l4}
+\chapter{API Reference}\label{ch:apireference}
+\section{\asciifamily FTI\_Init()}\label{sec:ftiinit}
+\section{\asciifamily FTI\_Protect( $\dots$ )}\label{sec:ftiprotect}
+\section{\asciifamily FTI\_Checkpoint( $\dots$ )}\label{sec:fticheckpoint}
+\section{\asciifamily FTI\_Snapshot()}\label{sec:ftisnapshot}
+\section{\asciifamily FTI\_Finalize()}\label{sec:ftifinalize}
+\chapter{Cofiguration}\label{ch:configuration}
+\section{[Basic]}\label{sec:basic}
+\subsection{Head}\label{subsec:head}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Node\_size}\label{subsec:nodesize}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Ckpt\_dir}\label{subsec:ckptdir}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Glbl\_dir}\label{subsec:glbldir}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Meta\_dir}\label{subsec:metadir}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Ckpt\_L1}\label{subsec:ckptl1}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Ckpt\_L2}\label{subsec:ckptl2}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Ckpt\_L3}\label{subsec:ckptl3}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Ckpt\_L4}\label{subsec:ckptl4}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Inline\_L2}\label{subsec:inlinel2}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Inline\_L3}\label{subsec:inlinel3}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Inline\_L4}\label{subsec:inlinel4}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{keep\_last\_ckpt}\label{subsec:keeplastckpt}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Group\_size}\label{subsec:groupsize}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Verbosity}\label{subsec:verbosity}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\section{[Restart]}\label{sec:restart}
+\subsection{Failure}\label{subsec:failure}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Exec\_ID}\label{subsec:execid}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\section{[Injection]}\label{sec:injection}
+\subsection{rank}\label{subsec:rank}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{number}\label{subsec:number}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{position}\label{subsec:position}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{frequenzy}\label{subsec:frequency}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\section{[Advanced]}\label{sec:advanced}
+\subsection{Block\_size}\label{subsec:blockzize}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Mpi\_tag}\label{subsec:mpitag}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\subsection{Local\_test}\label{subsec:localtest}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\chapter{Index}\label{ch:index}
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+\end{document}
+
