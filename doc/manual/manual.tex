@@ -1,7 +1,7 @@
 \documentclass{refrep}
 %%%%%%%%%% TITLE %%%%%%%%%%%
 \title{FTI - Usermanual}
-\author{Leonardo Bautista Gomez}
+\author{Leonardo Bautista Gomez, Kai Keller}
 \date{November, 2016}
 %%%%%%%%%% CODE FONTS %%%%%%
 \usepackage{ascii}
@@ -43,35 +43,164 @@ L4 denotes the fourth safety level of checkpointing. All the checkpoint files ar
 \chapter{Cofiguration}\label{ch:configuration}
 \section{[Basic]}\label{sec:basic}
 \subsection{Head}\label{subsec:head}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+The checkpointing safety levels L2, L3 and L4 produce additional overhead due to the necessary postprocessing work on the checkpoints. FTI offers the possibility to create an mpi process, called \emph{HEAD}, in which this postprocessing will be accomplished. This allows it for the application processes to continue the execution immediately after the checkpointing.
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+0 & The checkpoint postprocessing work is covered by the application processes. \\ \hline
+1 & The HEAD process accomplishes the checkpoint postprocessing work (notice: In this case, the number of application processes will be (n-1)/node). \\
+\hline 
+\end{tabular}
+\end{center}
+(\textit{default = 0})
 \subsection{Node\_size}\label{subsec:nodesize}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+Lets FTI know, how many processes will run on each node (\emph{npp}). In most cases this will be the amount of processing units within the node (e.g. 2 CPU's/node and 8 cores/CPU $\rightarrow$ 16 processes/node).
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+npp (int > 0) & Number of processing units within each node (notice: The total number of processes must be a multiple of groupsize $\times$ nodesize) \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = 2})
 \subsection{Ckpt\_dir}\label{subsec:ckptdir}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+This entry defines the path to the local hard drive on the nodes.
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+string & Path to the local hard drive on the nodes \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = \_BLANK\_})
 \subsection{Glbl\_dir}\label{subsec:glbldir}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+This entry defines the path to the checkpoint folder on the PFS (L4 checkpoints).
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+string & Path to the checkpoint directory on the PFS (notice: The directory has to be created before execution). \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = /path/to/global/storage/})
 \subsection{Meta\_dir}\label{subsec:metadir}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+This entry defines the path to the meta files directory. The directory has to be accessable from each node. It keeps files with informations about the topology of the execution.
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+string & Path to the meta files directory. (notice: The directory has to be created before execution). \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = /home/username/.fti})
 \subsection{Ckpt\_L1}\label{subsec:ckptl1}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+Here, the user sets the checkpoint frequency of L1 checkpoints.
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+L1 freq. (int $\geq$ 0)  & L1 checkpointing frequency in $\textit{min}^{-1}$. If the value is equal to 0, L1 checkpointing is disabled.  \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = 3})
 \subsection{Ckpt\_L2}\label{subsec:ckptl2}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+Here, the user sets the checkpoint frequency of L2 checkpoints.
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+L2 freq. (int $\geq$ 0)  & L2 checkpointing frequency in $\textit{min}^{-1}$. If the value is equal to 0, L2 checkpointing is disabled.  \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = 5})
 \subsection{Ckpt\_L3}\label{subsec:ckptl3}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+Here, the user sets the checkpoint frequency of L3 checkpoints.
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+L3 freq. (int $\geq$ 0)  & L3 checkpointing frequency in $\textit{min}^{-1}$. If the value is equal to 0, L3 checkpointing is disabled.  \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = 7})
 \subsection{Ckpt\_L4}\label{subsec:ckptl4}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+Here, the user sets the checkpoint frequency of L4 checkpoints.
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+L4 freq. (int $\geq$ 0)  & L4 checkpointing frequency in $\textit{min}^{-1}$. If the value is equal to 0, L4 checkpointing is disabled.  \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = 11})
 \subsection{Inline\_L2}\label{subsec:inlinel2}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+In this entry, the user decides, whether the post-processing work on the L2 checkpoints is done by the HEAD or by the application processes.
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+0 & The post-processing work of the L2 checkpoints is done by the HEAD (notice: This setting is only allowed if Head = 1).  \\ \hline
+1 & The post-processing work of the L2 checkpoints is done by the application processes.  \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = 1})
 \subsection{Inline\_L3}\label{subsec:inlinel3}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+In this entry, the user decides, whether the post-processing work on the L3 checkpoints is done by the HEAD or by the application processes.
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+0 & The post-processing work of the L3 checkpoints is done by the HEAD (notice: This setting is only allowed if Head = 1).  \\ \hline
+1 & The post-processing work of the L3 checkpoints is done by the application processes.  \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = 1})
 \subsection{Inline\_L4}\label{subsec:inlinel4}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+In this entry, the user decides, whether the post-processing work on the L4 checkpoints is done by the HEAD or by the application processes.
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+0 & The post-processing work of the L4 checkpoints is done by the HEAD (notice: This setting is only allowed if Head = 1).  \\ \hline
+1 & The post-processing work of the L4 checkpoints is done by the application processes.  \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = 1})
 \subsection{keep\_last\_ckpt}\label{subsec:keeplastckpt}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+This setting tells FTI whether the last checkpoint taken during the execution will be kept in the case of a successful run or not. 
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+0 & After {\asciifamily FTI\_Finalize()}, the meta files and checkpoints will be removed. No checkpoint data will be kept on the PFS or on the local hard drives of the nodes.  \\ \hline
+1 & After {\asciifamily FTI\_Finalize()}, the last checkpoint will be kept (notice: Additionally, the setting \emph{failure} in the configuration file is set to 2. This will lead to a restart from the last checkpoint if the application is executed again).  \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = 0})
 \subsection{Group\_size}\label{subsec:groupsize}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+The group size entry sets, how many nodes (members) forming a group. 
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+int i (2 $\leq$ i $\leq$ 32) & Number of nodes contained in a group (notice: The total number of processes must be a multiple of groupsize $\times$ nodesize). \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = 4})
 \subsection{Verbosity}\label{subsec:verbosity}
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+Sets the verbosity level
+\begin{center}
+\begin{tabular}[h!]{|p{0.3\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Value} & \textbf{Meaning} \\ \hline
+1 & Debug sensitive. Beside warnings, errors and informations, FTI debugging information will be printed.  \\ \hline
+2 & Information sensitive. FTI prints warnings, errors and informations. \\ \hline
+3 & FTI prints only warnings and errors.  \\ \hline
+4 & FTI prints only errors.  \\ \hline
+\end{tabular}
+\end{center}
+(\textit{default = 2})
 \section{[Restart]}\label{sec:restart}
 \subsection{Failure}\label{subsec:failure}
 Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.

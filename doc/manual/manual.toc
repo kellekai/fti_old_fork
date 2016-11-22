@@ -1,21 +1,21 @@
-\contentsline {chapter}{\numberline {1}Introduction}{3}{chapter.1}
-\contentsline {chapter}{\numberline {2}Multilevel Checkpointing}{4}{chapter.2}
-\contentsline {section}{\numberline {2.1}L1}{4}{section.2.1}
-\contentsline {section}{\numberline {2.2}L2}{4}{section.2.2}
-\contentsline {section}{\numberline {2.3}L3}{4}{section.2.3}
-\contentsline {section}{\numberline {2.4}L4}{4}{section.2.4}
-\contentsline {chapter}{\numberline {3}API Reference}{5}{chapter.3}
-\contentsline {section}{\numberline {3.1}\fontencoding {U}\fontfamily {ascii}\selectfont FTI\_Init()}{5}{section.3.1}
-\contentsline {section}{\numberline {3.2}\fontencoding {U}\fontfamily {ascii}\selectfont FTI\_Protect( $\dots $ )}{5}{section.3.2}
-\contentsline {section}{\numberline {3.3}\fontencoding {U}\fontfamily {ascii}\selectfont FTI\_Checkpoint( $\dots $ )}{5}{section.3.3}
-\contentsline {section}{\numberline {3.4}\fontencoding {U}\fontfamily {ascii}\selectfont FTI\_Snapshot()}{5}{section.3.4}
-\contentsline {section}{\numberline {3.5}\fontencoding {U}\fontfamily {ascii}\selectfont FTI\_Finalize()}{5}{section.3.5}
-\contentsline {chapter}{\numberline {4}Cofiguration}{6}{chapter.4}
-\contentsline {section}{\numberline {4.1}[Basic]}{6}{section.4.1}
-\contentsline {subsection}{\numberline {4.1.1}Head}{6}{subsection.4.1.1}
-\contentsline {subsection}{\numberline {4.1.2}Node\_size}{6}{subsection.4.1.2}
-\contentsline {subsection}{\numberline {4.1.3}Ckpt\_dir}{6}{subsection.4.1.3}
-\contentsline {subsection}{\numberline {4.1.4}Glbl\_dir}{6}{subsection.4.1.4}
+\contentsline {chapter}{\numberline {1}Introduction}{2}{chapter.1}
+\contentsline {chapter}{\numberline {2}Multilevel Checkpointing}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}L1}{3}{section.2.1}
+\contentsline {section}{\numberline {2.2}L2}{3}{section.2.2}
+\contentsline {section}{\numberline {2.3}L3}{3}{section.2.3}
+\contentsline {section}{\numberline {2.4}L4}{3}{section.2.4}
+\contentsline {chapter}{\numberline {3}API Reference}{4}{chapter.3}
+\contentsline {section}{\numberline {3.1}\fontencoding {U}\fontfamily {ascii}\selectfont FTI\_Init()}{4}{section.3.1}
+\contentsline {section}{\numberline {3.2}\fontencoding {U}\fontfamily {ascii}\selectfont FTI\_Protect( $\dots $ )}{4}{section.3.2}
+\contentsline {section}{\numberline {3.3}\fontencoding {U}\fontfamily {ascii}\selectfont FTI\_Checkpoint( $\dots $ )}{4}{section.3.3}
+\contentsline {section}{\numberline {3.4}\fontencoding {U}\fontfamily {ascii}\selectfont FTI\_Snapshot()}{4}{section.3.4}
+\contentsline {section}{\numberline {3.5}\fontencoding {U}\fontfamily {ascii}\selectfont FTI\_Finalize()}{4}{section.3.5}
+\contentsline {chapter}{\numberline {4}Cofiguration}{5}{chapter.4}
+\contentsline {section}{\numberline {4.1}[Basic]}{5}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Head}{5}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}Node\_size}{5}{subsection.4.1.2}
+\contentsline {subsection}{\numberline {4.1.3}Ckpt\_dir}{5}{subsection.4.1.3}
+\contentsline {subsection}{\numberline {4.1.4}Glbl\_dir}{5}{subsection.4.1.4}
 \contentsline {subsection}{\numberline {4.1.5}Meta\_dir}{6}{subsection.4.1.5}
 \contentsline {subsection}{\numberline {4.1.6}Ckpt\_L1}{6}{subsection.4.1.6}
 \contentsline {subsection}{\numberline {4.1.7}Ckpt\_L2}{6}{subsection.4.1.7}
@@ -25,18 +25,18 @@
 \contentsline {subsection}{\numberline {4.1.11}Inline\_L3}{7}{subsection.4.1.11}
 \contentsline {subsection}{\numberline {4.1.12}Inline\_L4}{7}{subsection.4.1.12}
 \contentsline {subsection}{\numberline {4.1.13}keep\_last\_ckpt}{7}{subsection.4.1.13}
-\contentsline {subsection}{\numberline {4.1.14}Group\_size}{7}{subsection.4.1.14}
-\contentsline {subsection}{\numberline {4.1.15}Verbosity}{7}{subsection.4.1.15}
-\contentsline {section}{\numberline {4.2}[Restart]}{7}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Failure}{7}{subsection.4.2.1}
-\contentsline {subsection}{\numberline {4.2.2}Exec\_ID}{7}{subsection.4.2.2}
-\contentsline {section}{\numberline {4.3}[Injection]}{7}{section.4.3}
-\contentsline {subsection}{\numberline {4.3.1}rank}{7}{subsection.4.3.1}
-\contentsline {subsection}{\numberline {4.3.2}number}{7}{subsection.4.3.2}
-\contentsline {subsection}{\numberline {4.3.3}position}{8}{subsection.4.3.3}
-\contentsline {subsection}{\numberline {4.3.4}frequenzy}{8}{subsection.4.3.4}
-\contentsline {section}{\numberline {4.4}[Advanced]}{8}{section.4.4}
-\contentsline {subsection}{\numberline {4.4.1}Block\_size}{8}{subsection.4.4.1}
-\contentsline {subsection}{\numberline {4.4.2}Mpi\_tag}{8}{subsection.4.4.2}
-\contentsline {subsection}{\numberline {4.4.3}Local\_test}{8}{subsection.4.4.3}
-\contentsline {chapter}{\numberline {5}Index}{9}{chapter.5}
+\contentsline {subsection}{\numberline {4.1.14}Group\_size}{8}{subsection.4.1.14}
+\contentsline {subsection}{\numberline {4.1.15}Verbosity}{8}{subsection.4.1.15}
+\contentsline {section}{\numberline {4.2}[Restart]}{8}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Failure}{8}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Exec\_ID}{8}{subsection.4.2.2}
+\contentsline {section}{\numberline {4.3}[Injection]}{9}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}rank}{9}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}number}{9}{subsection.4.3.2}
+\contentsline {subsection}{\numberline {4.3.3}position}{9}{subsection.4.3.3}
+\contentsline {subsection}{\numberline {4.3.4}frequenzy}{9}{subsection.4.3.4}
+\contentsline {section}{\numberline {4.4}[Advanced]}{9}{section.4.4}
+\contentsline {subsection}{\numberline {4.4.1}Block\_size}{9}{subsection.4.4.1}
+\contentsline {subsection}{\numberline {4.4.2}Mpi\_tag}{9}{subsection.4.4.2}
+\contentsline {subsection}{\numberline {4.4.3}Local\_test}{9}{subsection.4.4.3}
+\contentsline {chapter}{\numberline {5}Index}{10}{chapter.5}
