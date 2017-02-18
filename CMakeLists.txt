@@ -10,6 +10,7 @@ endif()
 
 option(ENABLE_FORTRAN "Enables the generation of the Fortran wrapper for FTI" ON)
 option(ENABLE_EXAMPLES "Enables the generation of examples" ON)
+option(ENABLE_TUTORIAL "Enables the generation of tutorial files" ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeScripts")
 include(AppendProperty)
@@ -44,8 +45,10 @@ append_property(TARGET fti.static fti.shared
 set_property(TARGET fti.static fti.shared
 	PROPERTY OUTPUT_NAME fti)
 
-target_link_libraries(fti.static ${MPI_C_LIBRARIES})
-target_link_libraries(fti.shared ${MPI_C_LIBRARIES})
+find_library(LIBM m DOC "The math library")
+
+target_link_libraries(fti.static ${MPI_C_LIBRARIES} "${LIBM}") 
+target_link_libraries(fti.shared ${MPI_C_LIBRARIES} "${LIBM}")
 
 set(FTI_TARGETS fti.static fti.shared)
 install(TARGETS fti.static fti.shared DESTINATION lib)
@@ -91,6 +94,10 @@ endif()
 
 if(ENABLE_EXAMPLES)
 	add_subdirectory(examples)
+endif()
+
+if(ENABLE_TUTORIAL)
+	add_subdirectory(tutorial)
 endif()
 
 
