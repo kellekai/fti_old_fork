@@ -80,107 +80,21 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
                   FTIT_dataset* FTI_Data)
 
 {
-    int i, res, reslen, tres;
-    MPI_Offset pfsize = 0; // parallel file size
-    MPI_Offset block=0, block_offset=0, offset; // total size of datasets. Needed for parallel write to pf
-    MPI_Status status;
-    MPI_Datatype dtype;
-    MPI_Info info;
+    int i, res;
     FILE* fd;
-    MPI_File pfh; // parallel file handle
-    char fn[FTI_BUFS], str[FTI_BUFS], mpi_err[FTI_BUFS];
-    char debug_str[FTI_BUFS]; // DEBUG
+    char fn[FTI_BUFS], str[FTI_BUFS];
 
     double tt = MPI_Wtime();
-    
-    int globalTmp = (FTI_Ckpt[4].isInline && FTI_Exec->ckptLvel == 4) ? 1 : 0;
-    
-    // L4 checkpoint on the PFS with MPI I/O
-    if (FTI_Ckpt[4].isInline && FTI_Exec->ckptLvel == 4) {
-       
-        // enable collective buffer optimization
-        MPI_Info_create(&info);
-        MPI_Info_set(info, "romio_cb_write", "automatic");
-        
-        // set stripping unit to 4MB
-        MPI_Info_set(info, "stripping_unit", "4194304");
 
-        // collective file name
-        snprintf(FTI_Exec->ckptFile, FTI_BUFS, "Ckpt%d-MPI-IO.fti", FTI_Exec->ckptID);
+    snprintf(FTI_Exec->ckptFile, FTI_BUFS, "Ckpt%d-Rank%d.fti", FTI_Exec->ckptID, FTI_Topo->myRank);
+    if (FTI_Ckpt[4].isInline && FTI_Exec->ckptLvel == 4) {
         sprintf(fn, "%s/%s", FTI_Conf->gTmpDir, FTI_Exec->ckptFile);
-        
-        // create global temp dir
         if (mkdir(FTI_Conf->gTmpDir, 0777) == -1)
             if (errno != EEXIST) {
                 FTI_Print("Cannot create global directory", FTI_EROR);
             }
-        
-        // determine parallel file size
-        for (i = 0; i < FTI_Exec->nbVar; i++) {
-            pfsize += FTI_Data[i].size;   
-        }
-        pfsize *= (FTI_Topo->nbApprocs)*(FTI_Topo->nbNodes);
-
-        // open parallel file (collective call)
-        res = MPI_File_open(FTI_Exec->globalComm, fn, MPI_MODE_WRONLY|MPI_MODE_CREATE, info, &pfh); 
-     
-        // check if successfull
-        if (res != 0) {
-            MPI_Error_string(res, mpi_err, &reslen);
-            snprintf(str, FTI_BUFS, "unable to create file [MPI ERROR - %i] %s", res, mpi_err);
-            FTI_Print(str, FTI_EROR);
-            return FTI_NSCS;
-        }
-        
-        // set parallel file size (collective)
-        res = MPI_File_set_size(pfh, pfsize);
-
-        // check if successfull
-        if (res != 0) {
-            MPI_Error_string(res, mpi_err, &reslen);
-            snprintf(str, FTI_BUFS, "unable to set file size [MPI ERROR - %i] %s", res, mpi_err);
-            FTI_Print(str, FTI_EROR);
-            return FTI_NSCS;
-        }
-        
-        // write data to parallel file on the PFS
-        for (i = 0; i < FTI_Exec->nbVar; i++) {
-            
-            block = FTI_Data[i].size; // size in bytes of the whole dataset for protected var with ID = i        
-            MPI_Type_contiguous(FTI_Data[i].eleSize, MPI_BYTE, &dtype); 
-            MPI_Type_commit(&dtype);
-            
-            offset = block_offset + block*(FTI_Topo->splitRank);
-            // TODO This accounts only for head disabled. To make this work in any case, 
-            // we need an increasing rank distribution for the processes which shall 
-            // write the data (maybe this already excists with nodeRank and headRank?)
-            res = MPI_File_write_at(pfh, offset, FTI_Data[i].ptr, FTI_Data[i].count, dtype, &status);
-                
-            // check if successfull
-            if (res != 0) {
-                MPI_Error_string(res, mpi_err, &reslen);
-                snprintf(str, FTI_BUFS, "unable to write ckpt data [MPI ERROR - %i] %s", res, mpi_err);
-                FTI_Print(str, FTI_EROR);
-                return FTI_NSCS;
-            }
-            
-            // increase the block offset by the written blocks
-            block_offset += block*(FTI_Topo->nbApprocs)*(FTI_Topo->nbNodes);
-            MPI_Type_free(&dtype);
-        }
-        
-
-        //MPI_File_close(&pfh);
-
-        res = FTI_Try(FTI_CreateMetadata(FTI_Conf, FTI_Exec, FTI_Topo, globalTmp), "create metadata.");
-        
-        MPI_Info_free(&info);
-
-        return res;
-        
     }
     else {
-        snprintf(FTI_Exec->ckptFile, FTI_BUFS, "Ckpt%d-Rank%d.fti", FTI_Exec->ckptID, FTI_Topo->myRank);
         sprintf(fn, "%s/%s", FTI_Conf->lTmpDir, FTI_Exec->ckptFile);
         if (mkdir(FTI_Conf->lTmpDir, 0777) == -1)
             if (errno != EEXIST) {
@@ -227,6 +141,7 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
     }
     sprintf(str, "Time writing checkpoint file : %f seconds.", MPI_Wtime() - tt);
     FTI_Print(str, FTI_DBUG);
+    int globalTmp = (FTI_Ckpt[4].isInline && FTI_Exec->ckptLvel == 4) ? 1 : 0;
     res = FTI_Try(FTI_CreateMetadata(FTI_Conf, FTI_Exec, FTI_Topo, globalTmp), "create metadata.");
 
     return res;
