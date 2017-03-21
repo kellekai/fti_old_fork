@@ -255,7 +255,6 @@ int FTI_Protect(int id, void* ptr, long count, FTIT_type type);
 int FTI_BitFlip(int datasetID);
 int FTI_Checkpoint(int id, int level);
 int FTI_Recover();
-int FTI_Recover_MPIL4();
 int FTI_Snapshot();
 int FTI_Finalize();
 

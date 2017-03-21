@@ -72,6 +72,47 @@ int FTI_UpdateIterTime(FTIT_execution* FTI_Exec)
     This function checks whether the checkpoint needs to be local or remote,
     opens the target file and write dataset per dataset, the checkpoint data,
     it finally flushes and closes the checkpoint file.
+	
+	MPI File structure ::
+
+	+------------+---->
+	|            |
+	| Dataset 0  |
+	|            |  R
+	|            |
+	|            |  A
+	+------------+
+	.            .  N
+	.            .
+	.            .  K
+	.            .
+	+------------+
+	|            |  0
+	| Dataset N  |
+	|            |
+	|            |
+	+------------+---->
+	.            .
+	.            .
+	.            .
+	+------------+---->
+	|            |
+	| Dataset 0  |
+	|            |  R
+	|            |
+	|            |  A
+	+------------+
+	.            .  N
+	.            .
+	.            .  K
+	.            .
+	+------------+
+	|            |  N
+	| Dataset N  |
+	|            |
+	|            |
+	+------------+---->
+
 
  **/
 /*-------------------------------------------------------------------------*/
@@ -81,11 +122,15 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
 
 {
     int i, res, reslen, tres;
-    MPI_Offset pfsize = 0; // parallel file size
-    MPI_Offset block=0, block_offset=0, offset; // total size of datasets. Needed for parallel write to pf
+	/* 
+    * pfsize -> total MPI file size
+	* pfsector -> start of write block in MPI file for rank
+    */
+    MPI_Offset pfsize, pfsector = 0;
+    MPI_Offset block=0, offset;
     MPI_Status status;
     MPI_Datatype dtype;
-    MPI_Info info;
+    MPI_Info info; // MPI hints for performance improvements
     FILE* fd;
     MPI_File pfh; // parallel file handle
     char fn[FTI_BUFS], str[FTI_BUFS], mpi_err[FTI_BUFS];
@@ -95,18 +140,21 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
     
     int globalTmp = (FTI_Ckpt[4].isInline && FTI_Exec->ckptLvel == 4) ? 1 : 0;
     
-    // L4 checkpoint on the PFS with MPI I/O
+    /*  
+     *  L4 checkpoint on the PFS with MPI I/O
+     */
+
     if (FTI_Ckpt[4].isInline && FTI_Exec->ckptLvel == 4) {
        
         // enable collective buffer optimization
         MPI_Info_create(&info);
-        MPI_Info_set(info, "romio_cb_write", "automatic");
+        MPI_Info_set(info, "romio_cb_write", "enable");
         
         // set stripping unit to 4MB
         MPI_Info_set(info, "stripping_unit", "4194304");
 
-        // collective file name
-        snprintf(FTI_Exec->ckptFile, FTI_BUFS, "Ckpt%d-MPI-IO.fti", FTI_Exec->ckptID);
+        // collective file name. rank is -1 for all.
+        snprintf(FTI_Exec->ckptFile, FTI_BUFS, "Ckpt%d-Rank%d.fti", FTI_Exec->ckptID, -1);
         sprintf(fn, "%s/%s", FTI_Conf->gTmpDir, FTI_Exec->ckptFile);
         
         // create global temp dir
@@ -115,11 +163,12 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
                 FTI_Print("Cannot create global directory", FTI_EROR);
             }
         
-        // determine parallel file size
+        // determine parallel file size, pfsize, and sector offset, pfsector. 
         for (i = 0; i < FTI_Exec->nbVar; i++) {
-            pfsize += FTI_Data[i].size;   
+            pfsector += FTI_Data[i].size;   
         }
-        pfsize *= (FTI_Topo->nbApprocs)*(FTI_Topo->nbNodes);
+        pfsize = (FTI_Topo->nbApprocs)*(FTI_Topo->nbNodes)*pfsector;
+        pfsector *= FTI_Topo->splitRank;
 
         // open parallel file (collective call)
         res = MPI_File_open(FTI_Exec->globalComm, fn, MPI_MODE_WRONLY|MPI_MODE_CREATE, info, &pfh); 
@@ -129,6 +178,7 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
             MPI_Error_string(res, mpi_err, &reslen);
             snprintf(str, FTI_BUFS, "unable to create file [MPI ERROR - %i] %s", res, mpi_err);
             FTI_Print(str, FTI_EROR);
+            MPI_File_close(&pfh);
             return FTI_NSCS;
         }
         
@@ -140,17 +190,18 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
             MPI_Error_string(res, mpi_err, &reslen);
             snprintf(str, FTI_BUFS, "unable to set file size [MPI ERROR - %i] %s", res, mpi_err);
             FTI_Print(str, FTI_EROR);
+            MPI_File_close(&pfh);
             return FTI_NSCS;
         }
         
         // write data to parallel file on the PFS
         for (i = 0; i < FTI_Exec->nbVar; i++) {
             
-            block = FTI_Data[i].size; // size in bytes of the whole dataset for protected var with ID = i        
             MPI_Type_contiguous(FTI_Data[i].eleSize, MPI_BYTE, &dtype); 
             MPI_Type_commit(&dtype);
             
-            offset = block_offset + block*(FTI_Topo->splitRank);
+            // base offset is == (size of all datasets) * (number of writing ranks)
+            offset = pfsector + block;
             // TODO This accounts only for head disabled. To make this work in any case, 
             // we need an increasing rank distribution for the processes which shall 
             // write the data (maybe this already excists with nodeRank and headRank?)
@@ -164,13 +215,13 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
                 return FTI_NSCS;
             }
             
-            // increase the block offset by the written blocks
-            block_offset += block*(FTI_Topo->nbApprocs)*(FTI_Topo->nbNodes);
+            // increase sector offset by the written dataset sizes
+            block += FTI_Data[i].size;        
             MPI_Type_free(&dtype);
         }
         
-
-        //MPI_File_close(&pfh);
+        MPI_Barrier(FTI_Exec->globalComm); // needed since MPI_File_write_at is non-collective
+        MPI_File_close(&pfh);
 
         res = FTI_Try(FTI_CreateMetadata(FTI_Conf, FTI_Exec, FTI_Topo, globalTmp), "create metadata.");
         

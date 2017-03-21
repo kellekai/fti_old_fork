@@ -104,7 +104,7 @@ int FTI_CheckErasures(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
         buf = FTI_CheckFile(fn, *fs);
         MPI_Allgather(&buf, 1, MPI_INT, erased, 1, MPI_INT, FTI_Exec->groupComm);
         break;
-    }
+    }    
     }
     return FTI_SCES;
 }
@@ -138,10 +138,12 @@ int FTI_RecoverFiles(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
                 tres = FTI_NSCS;
             }
             else {
+                //TODO Do we have to ask this again for every level??
                 if (FTI_GetMeta(FTI_Conf, FTI_Exec, FTI_Topo, FTI_Ckpt, &fs, &maxFs, f, level) != FTI_SCES) {
                     tres = FTI_NSCS;
                 }
                 else {
+                    // In case that the ckpt to recover was written with parallel I/O into one file, rank is == -1
                     sscanf(FTI_Exec->ckptFile, "Ckpt%d-Rank%d.fti", &id, &r);
                     sprintf(str, "Trying recovery with Ckpt. %d at level %d.", id, level);
                     FTI_Print(str, FTI_DBUG);
@@ -153,6 +155,8 @@ int FTI_RecoverFiles(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
                         MPI_Barrier(FTI_COMM_WORLD);
                     }
                     if (FTI_Exec->ckptLvel == 4)
+                        r = -1; // TODO is not very elegant. accounts for the global file name
+                        sscanf(FTI_Exec->ckptFile, "Ckpt%d-Rank%d.fti", &id, &r);
                         r = FTI_RecoverL4(FTI_Conf, FTI_Exec, FTI_Topo, FTI_Ckpt, FTI_Topo->groupID);
                     if (FTI_Exec->ckptLvel == 3)
                         r = FTI_RecoverL3(FTI_Conf, FTI_Exec, FTI_Topo, FTI_Ckpt, FTI_Topo->groupID);
@@ -167,6 +171,8 @@ int FTI_RecoverFiles(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
             if (tres == FTI_SCES) {
                 sprintf(str, "Recovering successfully from level %d.", level);
                 FTI_Print(str, FTI_INFO);
+                if(level == 4) // TODO this is the easy solution which avoids changing too much code...
+                    FTI_Exec->ckptLvel = 1;
                 break;
             }
             else {
