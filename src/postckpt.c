@@ -312,7 +312,7 @@ int FTI_Flush(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
     if (ps < maxFs)
         ps = ps + FTI_Conf->blockSize;
     switch (level) {
-    case 0:
+    case 0: // if head = 1 and L4 is not inline
         sprintf(lfn, "%s/%s", FTI_Conf->lTmpDir, FTI_Exec->ckptFile);
         break;
     case 1:

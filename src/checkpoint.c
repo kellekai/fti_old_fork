@@ -122,10 +122,10 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
 
 {
     int i, res, reslen, tres;
-	/* 
-    * pfsize -> total MPI file size
-	* pfsector -> start of write block in MPI file for rank
-    */
+	/**
+     *  pfsize -> total MPI file size
+     *  pfsector -> start of write block in MPI file for rank
+     */
     MPI_Offset pfsize, pfsector = 0;
     MPI_Offset block=0, offset;
     MPI_Status status;
@@ -134,13 +134,12 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
     FILE* fd;
     MPI_File pfh; // parallel file handle
     char fn[FTI_BUFS], str[FTI_BUFS], mpi_err[FTI_BUFS];
-    char debug_str[FTI_BUFS]; // DEBUG
 
     double tt = MPI_Wtime();
     
     int globalTmp = (FTI_Ckpt[4].isInline && FTI_Exec->ckptLvel == 4) ? 1 : 0;
     
-    /*  
+    /**
      *  L4 checkpoint on the PFS with MPI I/O
      */
 
@@ -169,9 +168,9 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
         }
         pfsize = (FTI_Topo->nbApprocs)*(FTI_Topo->nbNodes)*pfsector;
         pfsector *= FTI_Topo->splitRank;
-
+        
         // open parallel file (collective call)
-        res = MPI_File_open(FTI_Exec->globalComm, fn, MPI_MODE_WRONLY|MPI_MODE_CREATE, info, &pfh); 
+        res = MPI_File_open(FTI_COMM_WORLD, fn, MPI_MODE_WRONLY|MPI_MODE_CREATE, info, &pfh); 
      
         // check if successfull
         if (res != 0) {
@@ -197,14 +196,21 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
         // write data to parallel file on the PFS
         for (i = 0; i < FTI_Exec->nbVar; i++) {
             
+            /** 
+             *  ATTENTION: Internally in MPI the type for FTI_Data[i].eleSize will be treated as an int.
+             *  So the Maximum size in bytes for a single data-structure to protect would be MAX_INT 
+             *  (usually 2.147.483.647). On the other hand, The argument, FTI_Data[i].count, 
+             *  passed in MPI_File_write_at, as well is treated as int. Hence the maximum number of 
+             *  elements in the array at data[i].ptr is as well MAX_INT.
+             */
+            
             MPI_Type_contiguous(FTI_Data[i].eleSize, MPI_BYTE, &dtype); 
             MPI_Type_commit(&dtype);
             
             // base offset is == (size of all datasets) * (number of writing ranks)
             offset = pfsector + block;
-            // TODO This accounts only for head disabled. To make this work in any case, 
-            // we need an increasing rank distribution for the processes which shall 
-            // write the data (maybe this already excists with nodeRank and headRank?)
+            
+            // write to PFS in parallel into one file.
             res = MPI_File_write_at(pfh, offset, FTI_Data[i].ptr, FTI_Data[i].count, dtype, &status);
                 
             // check if successfull
@@ -220,7 +226,7 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
             MPI_Type_free(&dtype);
         }
         
-        MPI_Barrier(FTI_Exec->globalComm); // needed since MPI_File_write_at is non-collective
+        MPI_Barrier(FTI_COMM_WORLD); // needed since MPI_File_write_at is non-collective
         MPI_File_close(&pfh);
 
         res = FTI_Try(FTI_CreateMetadata(FTI_Conf, FTI_Exec, FTI_Topo, globalTmp), "create metadata.");
@@ -230,6 +236,11 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
         return res;
         
     }
+    
+    /*  
+     *  L1,L2,L3 checkpointing
+     */
+
     else {
         snprintf(FTI_Exec->ckptFile, FTI_BUFS, "Ckpt%d-Rank%d.fti", FTI_Exec->ckptID, FTI_Topo->myRank);
         sprintf(fn, "%s/%s", FTI_Conf->lTmpDir, FTI_Exec->ckptFile);

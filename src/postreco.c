@@ -830,11 +830,11 @@ int FTI_RecoverL4(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
     sprintf(gfn, "%s/%s", FTI_Ckpt[4].dir, FTI_Exec->ckptFile);
     
     // rename checkpoint file. correct the rank from -1 to the actual rank.
-    sprintf(FTI_Exec->ckptFile, "Ckpt%d-Rank%d.fti", FTI_Exec->ckptID, FTI_Topo->splitRank);
+    sprintf(FTI_Exec->ckptFile, "Ckpt%d-Rank%d.fti", FTI_Exec->ckptID, FTI_Topo->myRank);
     sprintf(lfn, "%s/%s", FTI_Ckpt[1].dir, FTI_Exec->ckptFile);
     
     // open parallel file
-    buf = MPI_File_open(FTI_Exec->globalComm, gfn, MPI_MODE_RDWR, info, &pfh);
+    buf = MPI_File_open(FTI_COMM_WORLD, gfn, MPI_MODE_RDWR, info, &pfh);
     // check if successfull
     if (buf != 0) {
         MPI_Error_string(buf, mpi_err, &reslen);
