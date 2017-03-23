@@ -155,8 +155,7 @@ int FTI_RecoverFiles(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
                         MPI_Barrier(FTI_COMM_WORLD);
                     }
                     if (FTI_Exec->ckptLvel == 4)
-                        r = -1; // TODO is not very elegant. accounts for the global file name
-                        sscanf(FTI_Exec->ckptFile, "Ckpt%d-Rank%d.fti", &id, &r);
+                        sscanf(FTI_Exec->ckptFile, "Ckpt%d-mpiio.fti", &id);
                         r = FTI_RecoverL4(FTI_Conf, FTI_Exec, FTI_Topo, FTI_Ckpt, FTI_Topo->groupID);
                     if (FTI_Exec->ckptLvel == 3)
                         r = FTI_RecoverL3(FTI_Conf, FTI_Exec, FTI_Topo, FTI_Ckpt, FTI_Topo->groupID);

@@ -154,7 +154,7 @@ int FTI_WriteCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
         MPI_Info_set(info, "stripping_unit", "4194304");
 
         // collective file name. rank is -1 for all.
-        snprintf(FTI_Exec->ckptFile, FTI_BUFS, "Ckpt%d-Rank%d.fti", FTI_Exec->ckptID, -1);
+        snprintf(FTI_Exec->ckptFile, FTI_BUFS, "Ckpt%d-mpiio.fti", FTI_Exec->ckptID);
         sprintf(fn, "%s/%s", FTI_Conf->gTmpDir, FTI_Exec->ckptFile);
         
         // create global temp dir
