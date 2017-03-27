@@ -352,7 +352,7 @@ int FTI_PostCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
 	char catstr[FTI_BUFS];
 
     t0 = MPI_Wtime();
-
+    // If checkpoint shall get rejected -> groupclean. requested by app procs to head if local write unsuccessful.
     res = (FTI_Exec->ckptLvel == (FTI_REJW - FTI_BASE)) ? FTI_NSCS : FTI_SCES;
     MPI_Allreduce(&res, &tres, 1, MPI_INT, MPI_SUM, FTI_COMM_WORLD);
     if (tres != FTI_SCES) {
