@@ -292,14 +292,32 @@ int FTI_RSenc(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
 int FTI_Flush(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
               FTIT_topology* FTI_Topo, FTIT_checkpoint* FTI_Ckpt, int group, int level)
 {
-    char lfn[FTI_BUFS], gfn[FTI_BUFS], str[FTI_BUFS];
+    char lfn[FTI_BUFS], pfn[FTI_BUFS], str[FTI_BUFS], mpi_err[FTI_BUFS];
+    
+    FILE *lfd;
     unsigned long maxFs, fs, ps, pos = 0;
-    FILE *lfd, *gfd;
+    int bread=0;
+
+	MPI_Offset offset, debug;
+	MPI_Status status;
+    MPI_Info info;
+
+    size_t bytes;
+    int res, reslen, headRank, rank;
+
+    MPI_File pfh;
+    
+    MPI_Info_create(&info);
+    MPI_Info_set(info, "romio_cb_write", "enable");
+    MPI_Info_set(info, "stripping_unit", "4194304");
+    
+    MPI_Comm_rank(FTI_COMM_WORLD, &headRank);
+        
     if (level == -1)
         return FTI_SCES; // Fake call for inline PFS checkpoint
 
     FTI_Print("Starting checkpoint post-processing L4", FTI_DBUG);
-    int res = FTI_Try(FTI_GetMeta(FTI_Conf, FTI_Exec, FTI_Topo, FTI_Ckpt, &fs, &maxFs, group, level), "obtain metadata.");
+    res = FTI_Try(FTI_GetMeta(FTI_Conf, FTI_Exec, FTI_Topo, FTI_Ckpt, &fs, &maxFs, group, level), "obtain metadata.");
     if (res != FTI_SCES)
         return FTI_NSCS;
 
@@ -307,7 +325,7 @@ int FTI_Flush(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
         if (errno != EEXIST)
             FTI_Print("Cannot create directory", FTI_EROR);
     }
-
+    
     ps = (maxFs / FTI_Conf->blockSize) * FTI_Conf->blockSize;
     if (ps < maxFs)
         ps = ps + FTI_Conf->blockSize;
@@ -326,11 +344,15 @@ int FTI_Flush(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
         break;
     }
 
-    // Open and resize files
-    sprintf(gfn, "%s/%s", FTI_Conf->gTmpDir, FTI_Exec->ckptFile);
+    // get ckptID
+    sscanf(FTI_Exec->ckptFile, "Ckpt%i-Rank%i.fti", &FTI_Exec->ckptID, &rank);
+    snprintf(FTI_Exec->ckptFile, FTI_BUFS, "Ckpt%d-mpiio.fti", FTI_Exec->ckptID);
+    
+    sprintf(pfn, "%s/%s", FTI_Conf->gTmpDir, FTI_Exec->ckptFile);
     sprintf(str, "L4 trying to access local ckpt. file (%s).", lfn);
     FTI_Print(str, FTI_DBUG);
 
+    // Open local file
     lfd = fopen(lfn, "rb");
     if (lfd == NULL) {
         FTI_Print("L4 cannot open the checkpoint file.", FTI_EROR);
@@ -338,54 +360,71 @@ int FTI_Flush(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
         return FTI_NSCS;
     }
 
-    gfd = fopen(gfn, "wb");
-    if (gfd == NULL) {
-        FTI_Print("L4 cannot open ckpt. file in the PFS.", FTI_EROR);
+    // Open parallel file MPI_COMM_SELF
+    res = MPI_File_open(FTI_COMM_WORLD, pfn, MPI_MODE_WRONLY|MPI_MODE_CREATE, info, &pfh);
+    
+	// check if successfull
+	if (res != 0) {
+		MPI_Error_string(res, mpi_err, &reslen);
+		snprintf(str, FTI_BUFS, "unable to create file [MPI ERROR - %i] %s", res, mpi_err);
+		FTI_Print(str, FTI_EROR);
+		MPI_File_close(&pfh);
+		fclose(lfd);
+		return FTI_NSCS;
+	}
+	
 
-        fclose(lfd);
-
-        return FTI_NSCS;
-    }
-
+	// check if successfull
+	if (res != 0) {
+		MPI_Error_string(res, mpi_err, &reslen);
+		snprintf(str, FTI_BUFS, "unable to set file size [MPI ERROR - %i] %s", res, mpi_err);
+		FTI_Print(str, FTI_EROR);
+		MPI_File_close(&pfh);
+		fclose(lfd);
+		return FTI_NSCS;
+	}
+	
     char *blBuf1 = talloc(char, FTI_Conf->blockSize);
     unsigned long bSize = FTI_Conf->blockSize;
-
+	
+	offset = headRank * maxFs * FTI_Topo->nbApprocs + (group-1) * maxFs;
     // Checkpoint files exchange
     while (pos < ps) {
         if ((fs - pos) < FTI_Conf->blockSize)
             bSize = fs - pos;
 
-        size_t bytes = fread(blBuf1, sizeof(char), bSize, lfd);
+        bytes = fread(blBuf1, sizeof(char), bSize, lfd);
         if (ferror(lfd)) {
             FTI_Print("L4 cannot read from the ckpt. file.", FTI_EROR);
 
             free(blBuf1);
 
             fclose(lfd);
-            fclose(gfd);
+            MPI_File_close(&pfh);
 
             return FTI_NSCS;
         }
-
-        fwrite(blBuf1, sizeof(char), bytes, gfd);
-        if (ferror(gfd)) {
-            FTI_Print("L4 cannot write to the ckpt. file in the PFS.", FTI_EROR);
-
-            free(blBuf1);
-
-            fclose(lfd);
-            fclose(gfd);
-
-            return FTI_NSCS;
-        }
+        
+		res = MPI_File_write_at(pfh, offset, blBuf1, bytes, MPI_BYTE, &status);
+	
+		// check if successfull
+		if (res != 0) {
+			MPI_Error_string(res, mpi_err, &reslen);
+			snprintf(str, FTI_BUFS, "unable to write data [MPI ERROR - %i] %s", res, mpi_err);
+			FTI_Print(str, FTI_EROR);
+			MPI_File_close(&pfh);
+			fclose(lfd);
+			return FTI_NSCS;
+		}
 
         pos = pos + FTI_Conf->blockSize;
+		offset += bytes;
     }
 
     free(blBuf1);
-
+    
     fclose(lfd);
-    fclose(gfd);
+    MPI_File_close(&pfh);
 
-    return FTI_SCES;
+    return res;
 }

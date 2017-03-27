@@ -143,7 +143,6 @@ int FTI_RecoverFiles(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
                     tres = FTI_NSCS;
                 }
                 else {
-                    // In case that the ckpt to recover was written with parallel I/O into one file, rank is == -1
                     sscanf(FTI_Exec->ckptFile, "Ckpt%d-Rank%d.fti", &id, &r);
                     sprintf(str, "Trying recovery with Ckpt. %d at level %d.", id, level);
                     FTI_Print(str, FTI_DBUG);

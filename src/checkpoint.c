@@ -346,10 +346,15 @@ int FTI_PostCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
                  FTIT_topology* FTI_Topo, FTIT_checkpoint* FTI_Ckpt,
                  int group, int fo, int pr)
 {
-    int i, tres, res, level, nodeFlag, globalFlag = !FTI_Topo->splitRank;
+    int i, j, tres, res, level, nodeFlag, globalFlag = !FTI_Topo->splitRank, headRank;
+    int save_sectorID, save_groupID, nbSectors;
     double t0, t1, t2, t3;
     char str[FTI_BUFS];
 	char catstr[FTI_BUFS];
+    unsigned long fs, maxFs;
+    MPI_Offset _fs;
+    MPI_File pfh;
+    
 
     t0 = MPI_Wtime();
     // If checkpoint shall get rejected -> groupclean. requested by app procs to head if local write unsuccessful.
@@ -378,10 +383,44 @@ int FTI_PostCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
             break;
         }
     }
+    
     MPI_Allreduce(&res, &tres, 1, MPI_INT, MPI_SUM, FTI_COMM_WORLD);
     if (tres != FTI_SCES) {
         FTI_GroupClean(FTI_Conf, FTI_Topo, FTI_Ckpt, 0, group, pr);
         return FTI_NSCS;
+    }
+
+    // update meta data
+    if (FTI_Exec->ckptLvel == 4 && FTI_Topo->amIaHead) {
+        
+        nbSectors = FTI_Topo->nbProc / (FTI_Topo->groupSize * FTI_Topo->nodeSize);
+    
+        // backup execution values
+        save_sectorID = FTI_Topo->sectorID;
+        save_groupID = FTI_Topo->groupID;
+        snprintf(str, FTI_BUFS, "%s/%s", FTI_Conf->gTmpDir, FTI_Exec->ckptFile);
+
+        // get MPI file size
+        MPI_File_open(FTI_COMM_WORLD, str, MPI_MODE_RDONLY, MPI_INFO_NULL, &pfh);
+        MPI_File_get_size(pfh, &_fs);
+        fs = _fs;
+        maxFs = fs;
+        MPI_File_close(&pfh);
+
+        // update Meta data files for processes in group
+        for (i = 0; i < nbSectors; i++) {
+            FTI_Topo->sectorID = i;
+            for (j = 1; j <= FTI_Topo->nbApprocs; j++) {
+                // TODO: Potential bug, since more then one process may try to access the same file.
+                FTI_Topo->groupID = j;
+                int res = FTI_Try(FTI_UpdateMetadata(FTI_Conf, FTI_Topo, fs, maxFs, FTI_Exec->ckptFile), "write the metadata.");
+                if (res == FTI_NSCS) {
+                    return FTI_NSCS;
+                }
+            }
+        }
+        FTI_Topo->sectorID = save_sectorID;
+        FTI_Topo->groupID = save_groupID;
     }
 
     t2 = MPI_Wtime();
@@ -411,7 +450,7 @@ int FTI_PostCkpt(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
     MPI_Barrier(FTI_COMM_WORLD);
 
     t3 = MPI_Wtime();
-
+    
     sprintf(catstr, "Post-checkpoint took %.2f sec.", t3 - t0);
     sprintf(str, "%s (Ag:%.2fs, Pt:%.2fs, Cl:%.2fs)", catstr, t1 - t0, t2 - t1, t3 - t2);
     FTI_Print(str, FTI_INFO);
