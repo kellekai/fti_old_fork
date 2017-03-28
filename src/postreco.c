@@ -812,16 +812,13 @@ int FTI_RecoverL3(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
 int FTI_RecoverL4(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
                   FTIT_topology* FTI_Topo, FTIT_checkpoint* FTI_Ckpt, int group)
 {
-    int j, l, erased[FTI_BUFS], reslen, buf, appRank;
+    int j, l, erased[FTI_BUFS], reslen, buf;
     char gfn[FTI_BUFS], lfn[FTI_BUFS], mpi_err[FTI_BUFS], str[FTI_BUFS];
     FILE *lfd;
     MPI_File pfh;
     MPI_Offset offset, tfs, sfs, nbBlocks, block = 0, lastBlockBytes;
     MPI_Status status;
     MPI_Info info;
-    
-    // get appRank
-    MPI_Comm_rank(FTI_COMM_WORLD, &appRank);
     
     // enable collective buffer optimization
     MPI_Info_create(&info);
@@ -886,7 +883,7 @@ int FTI_RecoverL4(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
     
     // Checkpoint files transfer from PFS
     while (block < nbBlocks) {
-        offset = appRank*sfs + block*FTI_Conf->blockSize;
+        offset = FTI_Topo->splitRank*sfs + block*FTI_Conf->blockSize;
         
         // read block in parallel file
         buf = MPI_File_read_at(pfh, offset, blBuf1, FTI_Conf->blockSize, MPI_BYTE, &status);
@@ -913,7 +910,7 @@ int FTI_RecoverL4(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
         block++;
     }
     
-    offset = appRank*sfs + block*FTI_Conf->blockSize;
+    offset = FTI_Topo->splitRank*sfs + block*FTI_Conf->blockSize;
         
     // read block in parallel file
     buf = MPI_File_read_at(pfh, offset, blBuf1, lastBlockBytes, MPI_BYTE, &status);

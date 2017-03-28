@@ -514,6 +514,11 @@ int FTI_Snapshot()
 int FTI_Finalize()
 {
     int isCkpt;
+    char str[FTI_BUFS], pfn[FTI_BUFS];
+
+    MPI_File pfh;
+    MPI_Offset _fs;
+    unsigned int fs, maxFs;
 
     if (FTI_Topo.amIaHead) {
         MPI_Barrier(FTI_Exec.globalComm);
@@ -545,17 +550,39 @@ int FTI_Finalize()
 
     // If we need to keep the last checkpoint
     if (FTI_Conf.saveLastCkpt && FTI_Exec.ckptID > 0) {
+        
         if (FTI_Exec.lastCkptLvel != 4) {
             FTI_Try(FTI_Flush(&FTI_Conf, &FTI_Exec, &FTI_Topo, FTI_Ckpt, FTI_Topo.groupID, FTI_Exec.lastCkptLvel), "save the last ckpt. in the PFS.");
+            
+            // set pf name
+            snprintf(FTI_Exec.ckptFile, FTI_BUFS, "Ckpt%i-mpiio.fti", FTI_Exec.ckptID);
+            snprintf(pfn, FTI_BUFS, "%s/%s", FTI_Conf.gTmpDir, FTI_Exec.ckptFile);
+            
+            // get MPI file size
+            MPI_File_open(FTI_COMM_WORLD, pfn, MPI_MODE_RDONLY, MPI_INFO_NULL, &pfh);
+            
+            MPI_File_get_size(pfh, &_fs);
+            
+            fs = _fs;
+            maxFs = fs;
+            MPI_File_close(&pfh);
+            
+            // update meta data
+            int res = FTI_Try(FTI_UpdateMetadata(&FTI_Conf, &FTI_Topo, fs, maxFs, FTI_Exec.ckptFile), "write the metadata.");
+            if (res == FTI_NSCS) {
+                return FTI_NSCS;
+            }
+
             MPI_Barrier(FTI_COMM_WORLD);
+            
             if (FTI_Topo.splitRank == 0) {
                 if (access(FTI_Ckpt[4].dir, 0) == 0)
                     FTI_RmDir(FTI_Ckpt[4].dir, 1);
                 if (access(FTI_Ckpt[4].metaDir, 0) == 0)
                     FTI_RmDir(FTI_Ckpt[4].metaDir, 1);
 
-                if (rename(FTI_Ckpt[FTI_Exec.lastCkptLvel].metaDir, FTI_Ckpt[4].metaDir) == -1)
-                    FTI_Print("cannot save last ckpt. metaDir", FTI_EROR);
+                if (rename(FTI_Conf.mTmpDir, FTI_Ckpt[4].metaDir) == -1)
+                    FTI_Print("Cannot rename meta directory", FTI_EROR);
                 if (rename(FTI_Conf.gTmpDir, FTI_Ckpt[4].dir) == -1)
                     FTI_Print("cannot save last ckpt. dir", FTI_EROR);
             }

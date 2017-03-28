@@ -296,14 +296,14 @@ int FTI_Flush(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
     
     FILE *lfd;
     unsigned long maxFs, fs, ps, pos = 0;
-    int bread=0;
+    int fieldSector, headSector;
 
 	MPI_Offset offset, debug;
 	MPI_Status status;
     MPI_Info info;
 
     size_t bytes;
-    int res, reslen, headRank, rank;
+    int res, reslen, rank;
 
     MPI_File pfh;
     
@@ -311,8 +311,6 @@ int FTI_Flush(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
     MPI_Info_set(info, "romio_cb_write", "enable");
     MPI_Info_set(info, "stripping_unit", "4194304");
     
-    MPI_Comm_rank(FTI_COMM_WORLD, &headRank);
-        
     if (level == -1)
         return FTI_SCES; // Fake call for inline PFS checkpoint
 
@@ -373,21 +371,14 @@ int FTI_Flush(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
 		return FTI_NSCS;
 	}
 	
-
-	// check if successfull
-	if (res != 0) {
-		MPI_Error_string(res, mpi_err, &reslen);
-		snprintf(str, FTI_BUFS, "unable to set file size [MPI ERROR - %i] %s", res, mpi_err);
-		FTI_Print(str, FTI_EROR);
-		MPI_File_close(&pfh);
-		fclose(lfd);
-		return FTI_NSCS;
-	}
-	
     char *blBuf1 = talloc(char, FTI_Conf->blockSize);
     unsigned long bSize = FTI_Conf->blockSize;
-	
-	offset = headRank * maxFs * FTI_Topo->nbApprocs + (group-1) * maxFs;
+    
+    // define Offset
+    fieldSector = (level == 0) ? (group-1) : FTI_Topo->splitRank;
+    headSector = (level == 0) ? FTI_Topo->nbApprocs : 0;
+	offset = FTI_Topo->splitRank * maxFs * headSector + fieldSector * maxFs;
+    
     // Checkpoint files exchange
     while (pos < ps) {
         if ((fs - pos) < FTI_Conf->blockSize)
