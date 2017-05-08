@@ -142,13 +142,14 @@ int FTI_RecoverFiles(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
                 tres = FTI_NSCS;
             }
             else {
-                if (FTI_GetMeta(FTI_Conf, FTI_Exec, FTI_Topo, FTI_Ckpt, &fs, &maxFs, f, level) != FTI_SCES) {
+                if (FTI_GetMeta(FTI_Conf, FTI_Exec, FTI_Topo, FTI_Ckpt, &fs, &maxFs, FTI_Topo->groupID, level) != FTI_SCES) {
                     tres = FTI_NSCS;
                 }
                 else {
                     FTI_Exec->meta[0].fs = fs;
                     FTI_Exec->meta[0].maxFs = maxFs;
                     FTI_Exec->ckptLvel = level;
+                    printf("rank: %i, fs: %i\n", FTI_Topo->splitRank, (int)fs);
                     switch (FTI_Exec->ckptLvel) {
                         case 4:
                             FTI_Clean(FTI_Conf, FTI_Topo, FTI_Ckpt, 1, FTI_Topo->groupID, FTI_Topo->myRank);
