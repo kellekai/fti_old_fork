@@ -47,8 +47,8 @@ cd test
 #----------------------------------------------------------------------------------------
 #-------------------------------- Write tests here --------------------------------------
 
-	configs=(configH0I1.fti configH1I1.fti configH1I0.fti)
-	silentConfigs=(configH0I1Silent.fti configH1I1Silent.fti configH1I0Silent.fti)
+	configs=(configPOSIXH0I1.fti configPOSIXH1I1.fti configPOSIXH1I0.fti configMPIIOH0I1.fti configMPIIOH1I1.fti configMPIIOH1I0.fti)
+	silentConfigs=(configPOSIXH0I1Silent.fti configPOSIXH1I1Silent.fti configPOSIXH1I0Silent.fti configMPIIOH0I1Silent.fti configMPIIOH1I1Silent.fti configMPIIOH1I0Silent.fti)
 
 	if  [ -z "$TEST" ] || [ -z "$CONFIG" ]
 	then
