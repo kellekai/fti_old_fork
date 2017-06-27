@@ -7,10 +7,10 @@ cd ..
 sudo apt-get install -y libibverbs-dev librdmacm-dev
 
 source ~/.bashrc
-export CC=pgcc
-export CXX=pgc++
-export F90=pgfortran
-export FC=pgfortran
+CC=pgcc
+CXX=pgc++
+F90=pgfortran
+FC=pgfortran
 export PGI=/opt/pgi
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/pgi/linux86-64/2017/lib
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/pgi/linux86-64/2017/mpi/openmpi/lib
