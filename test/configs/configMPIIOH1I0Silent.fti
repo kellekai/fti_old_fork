@@ -28,6 +28,8 @@ Glbl_dir = ./Global
 Meta_dir = ./Meta
 #/home/username/.fti
 
+ckpt_io = 2
+
 # Level 1 ckpt interval in minutes of L1 ckpts (Local write)
 Ckpt_L1 = 1
 
