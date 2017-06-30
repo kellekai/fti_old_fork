@@ -37,7 +37,7 @@ set(SRC_FTI
 append_property(SOURCE ${SRC_FTI}
     PROPERTY COMPILE_FLAGS "${MPI_C_COMPILE_FLAGS}" "${SIONLIB_CFLAGS}")
 
-if(OPENSSL_FOUND)
+if(${OPENSSL_FOUND} AND NOT DEFINED ${NO_OPENSSL})
 	add_library(fti.static STATIC ${SRC_FTI} ${OPENSSL_LIBRARIES}
     		$<TARGET_OBJECTS:iniparser> $<TARGET_OBJECTS:jerasure>)
 	add_library(fti.shared SHARED ${SRC_FTI} ${OPENSSL_LIBRARIES}
@@ -51,6 +51,7 @@ else()
 		$<TARGET_OBJECTS:md5>)
 	append_property(TARGET fti.static fti.shared
 		PROPERTY LINK_FLAGS "-DMD5P=TRUE")
+	unset(OPENSSL_LIBRARIES)
 endif()
 
 append_property(TARGET fti.static fti.shared
@@ -60,7 +61,7 @@ set_property(TARGET fti.static fti.shared
 
 #PGCC C and C++ use builtin math functions, which are much more efficient than library calls.
 #http://www.cecalc.ula.ve/documentacion/tutoriales/HPF/pgiws_ug/pgi30u09.htm
-if("$ENV{USE_PGI}" STREQUAL "")
+if(NOT "$ENV{COMPILER}" STREQUAL "pgi")
 	find_library(LIBM m DOC "The math library")
 endif()
 

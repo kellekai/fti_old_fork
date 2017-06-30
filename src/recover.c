@@ -22,6 +22,7 @@
 int FTI_CheckFile(char* fn, unsigned long fs, char* checksum)
 {
     struct stat fileStatus;
+    char str[FTI_BUFS];
     if (access(fn, F_OK) == 0) {
         if (stat(fn, &fileStatus) == 0) {
             if (fileStatus.st_size == fs) {
@@ -43,6 +44,8 @@ int FTI_CheckFile(char* fn, unsigned long fs, char* checksum)
         }
     }
     else {
+        sprintf(str, "Missing file: \"%s\"", fn);
+        FTI_Print(str, FTI_WARN);
         return 1;
     }
 }
@@ -217,8 +220,13 @@ int FTI_RecoverFiles(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
             sprintf(str, "Recovering successfully from level %d.", level);
             FTI_Print(str, FTI_INFO);
             // This is to enable recovering from local for L4 case in FTI_Recover
-            if(level == 4) {
-               FTI_Exec->ckptLvel = 1;
+            if (level == 4) {
+                FTI_Exec->ckptLvel = 1;
+                if (FTI_Topo->splitRank == 0) {
+                    if (rename(FTI_Ckpt[4].metaDir, FTI_Ckpt[1].metaDir) == -1) {
+                        FTI_Print("Cannot rename L4 metadata folder to L1", FTI_WARN);
+                    }
+                }
             }
             break;
          }
