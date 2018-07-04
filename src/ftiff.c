@@ -948,15 +948,6 @@ int FTIFF_WriteFTIFF(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
         return FTI_NSCS;
     }
 
-    int fdd = fileno(fd);
-    if (fdd == -1) {
-        snprintf(strerr, FTI_BUFS, "FTI could not get file descriptor for checkpoint file (%s).", fn);
-        FTI_Print(strerr, FTI_EROR);
-        fclose(fd);
-        return FTI_NSCS;
-    }
-
-
     // make sure that is never a null ptr. otherwise its to fix.
     assert(FTI_Exec->firstdb);
     FTIFF_db *currentdb = FTI_Exec->firstdb;
@@ -1202,19 +1193,8 @@ int FTIFF_WriteFTIFF(FTIT_configuration* FTI_Conf, FTIT_execution* FTI_Exec,
         return FTI_NSCS;
     }
 
-    fsync(fdd);
+    fsync( fileno(fd) );
     fclose( fd );
-
-    //if( FTI_Exec->hasCkpt && FTI_Conf->dcpEnabled ) {
-    //    int indicator = rename(fn, fnr);
-    //    if ( indicator == -1 ) {
-    //        perror("CANNOT RENAME FILE");
-    //        //exit(-1);
-    //    }
-    //    //MPI_Barrier(FTI_COMM_WORLD);
-    //}
-    
-    //strncpy(FTI_Exec->meta[0].currentCkptFile, FTI_Exec->meta[0].ckptFile, FTI_BUFS);
 
     return FTI_SCES;
 
