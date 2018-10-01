@@ -89,7 +89,7 @@ printCorrupt () {
 startTestCorr () {
 	printRun $1 $2 $4
 	cp configs/$2 config.fti
-	mpirun -n $3 ./$1 config.fti $4 1 &> logFile1
+	mpirun -oversubscribe -n $3 ./$1 config.fti $4 1 &> logFile1
 	rtn=$?
 	if [ $rtn != 0 ]; then
 		echo "Failure. Program returned $rtn code."
@@ -107,7 +107,7 @@ startTestCorr () {
 		fi
 	fi
 	printResume $1 $2 $4
-	mpirun -n $3 ./$1 config.fti $4 0 &> logFile2
+	mpirun -oversubscribe -n $3 ./$1 config.fti $4 0 &> logFile2
 	if [ $4 = "1" ] || [ $4 = "4" ]; then 	#if L1 or L4 test should fail
 		if [ $4 != "4" ] || [ $6 != "0" ]; then #corruption only for local checkpoint
 			checkLog logFile2 patterns/L"$4$6" 1
@@ -129,14 +129,14 @@ startTestLogVerify () {
 	fi
 	printRun $1 $2 $4
 	cp configs/$2 config.fti
-	mpirun -n $3 ./$1 config.fti $4 1 &> logFile1
+	mpirun -oversubscribe -n $3 ./$1 config.fti $4 1 &> logFile1
 	if [ $? != 0 ]; then
 		exit 1
 	fi
 	checkLog logFile1 patterns/L"$4INIT" 0
 	checkFinalize $1 logFile1
 	printResume $1 $2 $4
-	mpirun -n $3 ./$1 config.fti $4 0 &> logFile2
+	mpirun -oversubscribe -n $3 ./$1 config.fti $4 0 &> logFile2
 	if [ $? != 0 ]; then
 		exit 1
 	fi
@@ -150,14 +150,14 @@ startTestLogVerify () {
 startTest () { #$1 - test name $2 - config name; $3 - number of processes; $4 - checkpoint level
 	printRun $1 $2 $4
 	cp configs/$2 config.fti
-	mpirun -n $3 ./$1 config.fti $4 1 &> logFile1
+	mpirun -oversubscribe -n $3 ./$1 config.fti $4 1 &> logFile1
 	rtn=$?
 	if [ $rtn != 0 ]; then
 		cat logFile1
 		exit $rtn
 	fi
 	printResume $1 $2 $4
-	mpirun -n $3 ./$1 config.fti $4 0 &> logFile2
+	mpirun -oversubscribe -n $3 ./$1 config.fti $4 0 &> logFile2
 	rtn=$?
 	if [ $rtn != 0 ]; then
 		cat logFile2
