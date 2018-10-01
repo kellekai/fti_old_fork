@@ -1,9 +1,17 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      args '--rm'
+      image 'kellekai/archlinuxopenmpi'
+    }
+
+  }
   stages {
     stage('Init') {
       steps {
-        echo 'This is a test pipeline'
+        sh '''su jenkins
+cd
+pwd'''
       }
     }
   }
