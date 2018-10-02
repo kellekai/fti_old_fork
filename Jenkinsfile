@@ -8,7 +8,9 @@ pipeline {
   stages {
     stage('DS L1 1/4') {
       steps {
-        sh '''mpirun --version
+        sh '''id
+pwd
+mpirun --version
 mpirun -n 16 echo "hello world"'''
       }
     }
