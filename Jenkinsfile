@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'kellekai/archlinuxopenmpi'
+      image 'kellekai/archlinuxopenmpi1.10'
     }
 
   }
@@ -15,14 +15,7 @@ make all install'''
     }
     stage('DS L1 1/4') {
       steps {
-        sh '''export TEST=diffSizes
-export CONFIG=configH0I1.fti
-export LEVEL=1
-export CKPTORPTNER=0
-export CORRORERASE=0
-export CORRUPTIONLEVEL=0
-cd build
-./test/tests.sh'''
+        sh JenkinsScripts/diffSizes-1.sh 
       }
     }
     stage('DS L1 2/4') {
