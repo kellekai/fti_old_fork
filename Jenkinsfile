@@ -15,7 +15,7 @@ make all install'''
     }
     stage('DS L1 1/4') {
       steps {
-        sh 'bash JenkinsScripts/diffSizes-1.sh'
+        sh 'source JenkinsScripts/diffSizes-1.sh'
       }
     }
     stage('DS L1 2/4') {
