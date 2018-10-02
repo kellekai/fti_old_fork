@@ -2,14 +2,14 @@ pipeline {
   agent {
     docker {
       image 'kellekai/archlinuxopenmpi1.10'
-      args '--user jenkins --privileged -w /home/jenkins'
     }
 
   }
   stages {
     stage('build') {
       steps {
-        sh '''mkdir build; cd build
+        sh '''
+mkdir build; cd build
 cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
 make all install'''
       }
