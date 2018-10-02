@@ -4,4 +4,4 @@ export LEVEL=2
 export CKPTORPTNER=1
 export CORRORERASE=1
 export CORRUPTIONLEVEL=3
-cd build;./test/test.sh
+cd build;./test/tests.sh
