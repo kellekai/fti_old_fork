@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       image 'kellekai/archlinuxopenmpi1.10'
-      args '--user jenkins -w /home/jenkins'
+      args '--user jenkins --privileged -w /home/jenkins'
     }
 
   }
