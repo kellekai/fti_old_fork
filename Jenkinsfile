@@ -2,6 +2,7 @@ pipeline {
   agent {
     docker {
       image 'kellekai/archlinuxopenmpi1.10'
+      args '--name arch-linux -d --user jenkins -w /home/jenkins'
     }
 
   }
