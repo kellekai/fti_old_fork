@@ -15,7 +15,7 @@ make all install'''
     }
   stage('testing') {
     steps {
-      dir(path: './build') {
+      dir(path: '`pwd`/build') {
           sh 'pwd'
       catchError {
         sh 'TEST=diffSizes CONFIG=configH0I1.fti LEVEL=1 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ./test/tests.sh'
