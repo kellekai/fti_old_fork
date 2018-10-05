@@ -22,7 +22,7 @@ pipeline {
       agent {
         docker {
           image 'kellekai/archlinuxopenmpi1.10'
-          args '-w $WORKSPACE/build-gcc'
+          args '-w $WORKSPACE/build-gcc -v $WORKSPACE/build-gcc:$WORKDSPACE/build-gcc:rw,z'
         }
       }
       steps {
