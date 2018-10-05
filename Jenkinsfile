@@ -7,14 +7,9 @@ pipeline {
       agent {
         docker {
           image 'kellekai/archlinuxopenmpi1.10'
-          args '-v $WORKSPACE/build-gcc:$WORKSPACE/build-gcc:rw,z'
         }
       }
       steps {
-        sh 'pwd'
-        sh 'ls -arthl'
-        sh 'sudo chown 995:995 build-gcc'
-        sh 'ls -arthl'
         sh '''
         cd build-gcc
         ls -arthl
@@ -27,7 +22,7 @@ pipeline {
       agent {
         docker {
           image 'kellekai/archlinuxopenmpi1.10'
-          args '-w $WORKSPACE/build-gcc -v $WORKSPACE/build-gcc:$WORKSPACE/build-gcc'
+          args '-w $WORKSPACE/build-gcc'
         }
       }
       steps {
