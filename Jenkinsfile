@@ -11,8 +11,9 @@ pipeline {
       }
       steps {
         sh '''
-        cd build-gcc
+        mkdir build-gcc
         ls -arthl
+        cd build-gcc
         cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
         make all install
         '''
