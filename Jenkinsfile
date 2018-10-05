@@ -1,10 +1,12 @@
 #!/bin/groovy
 
 pipeline {
-  agent('gcc') {
-    docker {
-      image 'kellekai/archlinuxopenmpi1.10'
-      args '-v $WORKSPACE/build-gcc:$WORKSPACE/build-gcc:rw,z'
+  agent {
+    node('gcc') {
+      docker {
+        image 'kellekai/archlinuxopenmpi1.10'
+        args '-v $WORKSPACE/build-gcc:$WORKSPACE/build-gcc:rw,z'
+      }
     }
   }
   stages {
