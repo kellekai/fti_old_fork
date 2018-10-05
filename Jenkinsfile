@@ -13,7 +13,8 @@ pipeline {
       steps {
         sh 'pwd'
         sh 'ls -arthl'
-        sudo chown 995:995 build-gcc
+        sh 'sudo chown 995:995 build-gcc'
+        sh 'ls -arthl'
         sh '''
         cd build-gcc
         ls -arthl
