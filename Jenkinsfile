@@ -1,19 +1,15 @@
 #!/bin/groovy
 
 pipeline {
-  agent {
-    node('gcc') {
-      docker {
-        image 'kellekai/archlinuxopenmpi1.10'
-        args '-v $WORKSPACE/build-gcc:$WORKSPACE/build-gcc:rw,z'
-      }
-    }
-  }
+  agent none
   stages {
     stage('Standard Tests') {
       agent {
         node {
-          label 'gcc'
+          docker {
+            image 'kellekai/archlinuxopenmpi1.10'
+            args '-v $WORKSPACE/build-gcc:$WORKSPACE/build-gcc:rw,z'
+          }
           customWorkspace 'build-gcc'
         }
       }
