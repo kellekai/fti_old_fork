@@ -7,6 +7,7 @@ pipeline {
       agent {
         docker {
           image 'kellekai/archlinuxopenmpi1.10'
+          reuseNode true
         }
       }
       steps {
