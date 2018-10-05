@@ -497,7 +497,7 @@ pipeline {
           }
         }
       }
-      stage('Standard Tests L4 No Head') {
+      stage('Standard Tests L4 With Head') {
         agent {
           docker {
             image 'kellekai/archlinuxopenmpi1.10'
