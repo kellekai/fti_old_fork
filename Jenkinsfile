@@ -12,7 +12,7 @@ pipeline {
       }
       steps {
         sh '''
-        mkdir build-gcc; cd build-gcc
+        cd build-gcc
         cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
         make all install
         '''
