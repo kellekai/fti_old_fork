@@ -3,8 +3,8 @@
 pipeline {
   agent {
     docker {
-      label 'gcc'
       image 'kellekai/archlinuxopenmpi1.10'
+      label 'gcc'
       args '-v $WORKSPACE/build-gcc:$WORKSPACE/build-gcc:rw,z'
     }
   }
