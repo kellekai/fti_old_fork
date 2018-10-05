@@ -39,6 +39,7 @@ pipeline {
         sh 'mkdir build/test/cornerCases'
         dir('build/test') {
           unstash 'test'
+          sh 'ls -arthl'
         }
         dir('build/test/patterns/posix_io') {
           unstash 'patterns_posix'
