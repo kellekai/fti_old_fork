@@ -615,21 +615,8 @@ pipeline {
           cmakesteps(versions)
         }
       }*/
-        docker.image('kellekai/archlinuxpgi18:stable').inside {
       stage('PGI Compiler Tests') {
-          withEnv(['PATH+EXTRA=$PGICC:$PGIMPICC']) {
-            sh 'echo $PATH'
-          }
-          sh '''
-            export PATH=$PGICC:$PGIMPICC:$PATH
-            echo $PATH
-            ls /opt/pgi/
-            mkdir build; cd build
-            CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
-            make -j 16 all install
-            '''
-        }
-        /*agent {
+        agent {
           docker {
             image 'kellekai/archlinuxpgi18:stable'
           }
@@ -644,7 +631,7 @@ pipeline {
             sh 'echo $PATH'
           }
           sh '''
-            export PATH=$PGICC:$PGIMPICC:$PATH
+            export PATH=$PGICC:$PGIMPICC
             echo $PATH
             ls /opt/pgi/
             mkdir build; cd build
