@@ -4,11 +4,11 @@ versions = [ '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9' ]
 
 def cmakesteps(list) {
   for (int i = 0; i < list.size(); i++) {
-      env.CMAKE = "bla"
+      env.CMAKE = "/opt/cmake/${list[i]}/bin/cmake"
       sh "mkdir build; cd build"
       sh "echo $CMAKE --version"
       sh '$CMAKE -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..'
-      sh "make all install"
+      sh "make -j 16 all install"
     catchError {
       sh 'cd build; TEST=diffSizes CONFIG=configH1I0.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=3  ./test/tests.sh'
     }
