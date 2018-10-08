@@ -700,43 +700,43 @@ pipeline {
             . $ICCPATH/compilervars.sh intel64
             . $MPICCPATH/mpivars.sh
             CFLAGS=$CFLAGS_FIX cmake -C ../intel.cmake cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
-            VERBOSE=1 make all install
+            make -j 16 all install
             '''
           catchError {
-            sh 'cd build; CONFIG=configH0I1.fti LEVEL=1 ./test/tests.sh'
+            sh 'cd build; PATH=$MPICCPATH:$PATH CONFIG=configH0I1.fti LEVEL=1 ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH0I1.fti LEVEL=2 ./test/tests.sh' 
+            sh 'cd build; PATH=$MPICCPATH:$PATH CONFIG=configH0I1.fti LEVEL=2 ./test/tests.sh' 
           }
           catchError {
-            sh 'cd build; CONFIG=configH0I1.fti LEVEL=3 ./test/tests.sh' 
+            sh 'cd build; PATH=$MPICCPATH:$PATH CONFIG=configH0I1.fti LEVEL=3 ./test/tests.sh' 
           }
           catchError {
-            sh 'cd build; CONFIG=configH0I1.fti LEVEL=4 ./test/tests.sh' 
+            sh 'cd build; PATH=$MPICCPATH:$PATH CONFIG=configH0I1.fti LEVEL=4 ./test/tests.sh' 
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I1.fti LEVEL=1 ./test/tests.sh' 
+            sh 'cd build; PATH=$MPICCPATH:$PATH CONFIG=configH1I1.fti LEVEL=1 ./test/tests.sh' 
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I1.fti LEVEL=2 ./test/tests.sh' 
+            sh 'cd build; PATH=$MPICCPATH:$PATH CONFIG=configH1I1.fti LEVEL=2 ./test/tests.sh' 
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I1.fti LEVEL=3 ./test/tests.sh' 
+            sh 'cd build; PATH=$MPICCPATH:$PATH CONFIG=configH1I1.fti LEVEL=3 ./test/tests.sh' 
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I1.fti LEVEL=4 ./test/tests.sh' 
+            sh 'cd build; PATH=$MPICCPATH:$PATH CONFIG=configH1I1.fti LEVEL=4 ./test/tests.sh' 
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I0.fti LEVEL=1 ./test/tests.sh' 
+            sh 'cd build; PATH=$MPICCPATH:$PATH CONFIG=configH1I0.fti LEVEL=1 ./test/tests.sh' 
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I0.fti LEVEL=2 ./test/tests.sh' 
+            sh 'cd build; PATH=$MPICCPATH:$PATH CONFIG=configH1I0.fti LEVEL=2 ./test/tests.sh' 
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I0.fti LEVEL=3 ./test/tests.sh' 
+            sh 'cd build; PATH=$MPICCPATH:$PATH CONFIG=configH1I0.fti LEVEL=3 ./test/tests.sh' 
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I0.fti LEVEL=4 ./test/tests.sh' 
+            sh 'cd build; PATH=$MPICCPATH:$PATH CONFIG=configH1I0.fti LEVEL=4 ./test/tests.sh' 
           }
         }
       }
