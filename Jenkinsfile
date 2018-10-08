@@ -628,9 +628,6 @@ pipeline {
           LD_LIBRARY_PATH = '/opt/pgi/linux86-64/18.4/lib'
         }
         steps {
-          withEnv(['PATH+EXTRA=$PGICC:$PGIMPICC']) {
-            sh 'echo $PATH'
-          }
           sh '''
             export PATH=$PGICC:$PGIMPICC:$PATH
             echo $PATH
@@ -640,7 +637,7 @@ pipeline {
             make -j 16 all install
             '''
           catchError {
-            sh 'cd build; CONFIG=configH0I1.fti LEVEL=1 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH0I1.fti LEVEL=1 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
             sh 'cd build; CONFIG=configH0I1.fti LEVEL=2 ./test/tests.sh'
