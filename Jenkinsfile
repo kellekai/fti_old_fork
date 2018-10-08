@@ -6,7 +6,7 @@ def cmakesteps(list) {
   for (int i = 0; i < list.size(); i++) {
       sh "mkdir build; cd build"
       sh "echo $CMAKE --version"
-      withEnv(["CMAKE=/opt/cmake/${list[i]}/bin/cmake"]) {
+      withEnv(['CMAKE=/opt/cmake/${list[i]}/bin/cmake']) {
         sh "$CMAKE -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF .."
       }
       sh "make all install"
