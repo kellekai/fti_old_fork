@@ -7,12 +7,12 @@ def cmakesteps(list) {
       env.CMAKE = "/opt/cmake/${list[i]}/bin/cmake"
       sh '''
       mkdir build; cd build
-      echo $CMAKE --version
-      $CMAKE -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
+      env.CMAKE --version
+      env.CMAKE -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
       make -j 16 all install
       '''
     catchError {
-      sh 'cd build; TEST=diffSizes CONFIG=configH1I0.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=3 CMAKEVERSION=${list[i]} ./test/tests.sh'
+      sh 'cd build; TEST=diffSizes CONFIG=configH1I0.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=3 ./test/tests.sh'
     }
     sh 'rm -rf build'
   }
