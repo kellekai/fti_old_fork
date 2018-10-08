@@ -628,13 +628,14 @@ pipeline {
         }
         steps {
           withEnv(['PATH+EXTRA=$PGICC:$PGIMPICC']) {
+            sh 'echo $PATH'
+          }
           sh '''
             echo $PATH
             mkdir build; cd build
             CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
             make -j 16 all install
             '''
-          }
           catchError {
             sh 'cd build; CONFIG=configH0I1.fti LEVEL=1 ./test/tests.sh'
           }
