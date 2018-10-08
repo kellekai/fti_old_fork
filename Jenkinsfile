@@ -690,7 +690,7 @@ pipeline {
           }
         }
         environment {
-          ENVFIX = 'CFLAGS="-D__PURE_INTEL_C99_HEADERS__ -D_Float32=float -D_Float64=double -D_Float32x=_Float64 -D_Float64x=_Float128"'
+          CFLAGS = '"-D__PURE_INTEL_C99_HEADERS__ -D_Float32=float -D_Float64=double -D_Float32x=_Float64 -D_Float64x=_Float128"'
           ICCPATH = '/opt/intel/compilers_and_libraries_2018.3.222/linux/bin'
           MPICCPATH = '/opt/intel/compilers_and_libraries_2018.3.222/linux/mpi/intel64/bin'
         }
@@ -699,7 +699,7 @@ pipeline {
             mkdir build; cd build
             . $ICCPATH/compilervars.sh intel64
             . $MPICCPATH/mpivars.sh
-            $ENVFIX -C ../intel.cmake cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
+            cmake -C ../intel.cmake cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
             make -j 16 all install
             '''
           catchError {
