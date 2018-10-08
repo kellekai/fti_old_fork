@@ -619,13 +619,13 @@ pipeline {
         agent {
           docker {
             image 'kellekai/archlinuxpgi18:stable'
-            args '-v /opt/pgi:/opt/pgi:rw,z'
           }
         }
         environment {
           PGICC = '/opt/pgi/linux86-64/18.4/bin/'
           PGIMPICC = '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/'
           LM_LICENSE_FILE = '$PGI/license.dat'
+          LD_LIBRARY_PATH = '/opt/pgi/linux86-64/18.4/lib'
         }
         steps {
           withEnv(['PATH+EXTRA=$PGICC:$PGIMPICC']) {
