@@ -619,7 +619,7 @@ pipeline {
         agent {
           docker {
             image 'kellekai/archlinuxpgi18:stable'
-            args '-v $WORKDSPACE/build:$WORKSPACE/build:rw,z'
+            args '-v $WORKSPACE/build:$WORKSPACE/build:rw,z'
           }
         }
         environment {
