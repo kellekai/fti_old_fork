@@ -672,6 +672,7 @@ pipeline {
           catchError {
             sh 'cd build; CONFIG=configH1I0.fti LEVEL=4 ./test/tests.sh'
           }
+        }
       }
     }
 }
