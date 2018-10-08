@@ -7,7 +7,7 @@ def cmakesteps(list) {
       sh "mkdir build; cd build"
       sh "echo $CMAKE --version"
       withEnv(['CMAKE=/opt/cmake/${list[i]}/bin/cmake']) {
-        sh "$CMAKE -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF .."
+        sh '$CMAKE -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..'
       }
       sh "make all install"
     catchError {
