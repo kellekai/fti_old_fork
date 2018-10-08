@@ -624,8 +624,8 @@ pipeline {
         steps {
           sh '''
             mkdir build; cd build
-            cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
-            make all install
+            CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
+            make -j 16 all install
             '''
           catchError {
             sh 'cd build; CONFIG=configH0I1.fti LEVEL=1 ./test/tests.sh'
