@@ -690,7 +690,7 @@ pipeline {
           }
         }
         environment {
-          CFLAGS = '"-D__PURE_INTEL_C99_HEADERS__ -D_Float32=float -D_Float64=double -D_Float32x=_Float64 -D_Float64x=_Float128"'
+          CFLAGS_FIX = '"-D__PURE_INTEL_C99_HEADERS__ -D_Float32=float -D_Float64=double -D_Float32x=_Float64 -D_Float64x=_Float128"'
           ICCPATH = '/opt/intel/compilers_and_libraries_2018.3.222/linux/bin'
           MPICCPATH = '/opt/intel/compilers_and_libraries_2018.3.222/linux/mpi/intel64/bin'
         }
@@ -699,8 +699,8 @@ pipeline {
             mkdir build; cd build
             . $ICCPATH/compilervars.sh intel64
             . $MPICCPATH/mpivars.sh
-            cmake -C ../intel.cmake cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
-            make -j 16 all install
+            CFLAGS=$CFLAGS_FIX cmake -C ../intel.cmake cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
+            VERBOSE=1 make all install
             '''
           catchError {
             sh 'cd build; CONFIG=configH0I1.fti LEVEL=1 ./test/tests.sh'
