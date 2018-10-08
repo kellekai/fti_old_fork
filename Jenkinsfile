@@ -619,6 +619,7 @@ pipeline {
         agent {
           docker {
             image 'kellekai/archlinuxpgi18:stable'
+            args '-v $WORKDSPACE/build:$WORKSPACE/build:rw,z'
           }
         }
         environment {
@@ -633,7 +634,7 @@ pipeline {
           sh '''
             export PATH=$PGICC:$PGIMPICC
             echo $PATH
-            mkdir build; cd build
+            cd build
             CC=pgcc FC=pgfortran /usr/sbin/cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
             make -j 16 all install
             '''
