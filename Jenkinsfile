@@ -615,9 +615,8 @@ pipeline {
           cmakesteps(versions)
         }
       }*/
+        docker.image('kellekai/archlinuxpgi18:stable').inside {
       stage('PGI Compiler Tests') {
-        writeFile file: "test.txt", text: "test"
-        docker.image('kellekai/archlinuxpgi18:stable').inside() {
           withEnv(['PATH+EXTRA=$PGICC:$PGIMPICC']) {
             sh 'echo $PATH'
           }
