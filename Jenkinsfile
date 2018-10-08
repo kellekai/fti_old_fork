@@ -618,7 +618,7 @@ pipeline {
       stage('PGI Compiler Tests') {
         agent {
           docker {
-            image 'kellekai/archlinuxpgi18'
+            image 'kellekai/archlinuxpgi18:stable'
           }
         }
         environment {
