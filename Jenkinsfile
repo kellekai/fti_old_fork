@@ -629,6 +629,7 @@ pipeline {
         steps {
           withEnv(['PATH+EXTRA=$PGICC:$PGIMPICC']) {
           sh '''
+            echo $PATH
             mkdir build; cd build
             CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
             make -j 16 all install
