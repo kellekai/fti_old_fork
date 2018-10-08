@@ -7,8 +7,8 @@ def cmakesteps(list) {
       env.CMAKE = "/opt/cmake/${list[i]}/bin/cmake"
       sh '''
       mkdir build; cd build
-      env.CMAKE --version
-      env.CMAKE -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
+      $CMAKE --version
+      $CMAKE -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
       make -j 16 all install
       '''
     catchError {
