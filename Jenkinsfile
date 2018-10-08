@@ -4,9 +4,11 @@ versions = [ '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9' ]
 
 def cmakesteps(list) {
   for (int i = 0; i < list.size(); i++) {
+    environment {
+        CMAKEVERSION = list[i]
+        CMAKE = /opt/cmake/CMAKEVERSION/bin/cmake
+    }
     sh "mkdir build; cd build"
-    sh "export CMAKEVERSION=${list[i]}"
-    sh "export CMAKE=/opt/cmake/$CMAKEVERSION/bin/cmake"
     sh "echo $CMAKE --version"
     sh "$CMAKE -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF .."
     sh "make all install"
