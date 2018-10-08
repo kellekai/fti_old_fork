@@ -619,6 +619,7 @@ pipeline {
         agent {
           docker {
             image 'kellekai/archlinuxpgi18:stable'
+            args '-v /opt/pgi:/opt/pgi'
           }
         }
         environment {
