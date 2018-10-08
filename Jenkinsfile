@@ -614,7 +614,7 @@ pipeline {
         steps {
           cmakesteps(versions)
         }
-      }*/
+      }
       stage('PGI Compiler Tests') {
         agent {
           docker {
@@ -680,6 +680,63 @@ pipeline {
           }
           catchError {
             sh 'cd build; CONFIG=configH1I0.fti LEVEL=4 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
+          }
+        }
+      }*/
+      stage('Intel Compiler Tests') {
+        agent {
+          docker {
+            image 'kellekai/archlinuximpi18:stable'
+          }
+        }
+        environment {
+          ENVFIX = 'CFLAGS="-D__PURE_INTEL_C99_HEADERS__ -D_Float32=float -D_Float64=double -D_Float32x=_Float64 -D_Float64x=_Float128"'
+          ICCPATH = '/opt/intel/compilers_and_libraries_2018.3.222/linux/bin/intel64'
+          MPICCPATH = '/opt/intel/compilers_and_libraries_2018.3.222/linux/mpi/intel64/bin'
+        }
+        steps {
+          sh '''
+            mkdir build; cd build
+            . ICCPATH/compilervars.sh
+            . MPICCPATH/mpivars.sh
+            $ENVFIX -C ../intel.cmake cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
+            make -j 16 all install
+            '''
+          catchError {
+            sh 'cd build; CONFIG=configH0I1.fti LEVEL=1 ./test/tests.sh'
+          }
+          catchError {
+            sh 'cd build; CONFIG=configH0I1.fti LEVEL=2 ./test/tests.sh' 
+          }
+          catchError {
+            sh 'cd build; CONFIG=configH0I1.fti LEVEL=3 ./test/tests.sh' 
+          }
+          catchError {
+            sh 'cd build; CONFIG=configH0I1.fti LEVEL=4 ./test/tests.sh' 
+          }
+          catchError {
+            sh 'cd build; CONFIG=configH1I1.fti LEVEL=1 ./test/tests.sh' 
+          }
+          catchError {
+            sh 'cd build; CONFIG=configH1I1.fti LEVEL=2 ./test/tests.sh' 
+          }
+          catchError {
+            sh 'cd build; CONFIG=configH1I1.fti LEVEL=3 ./test/tests.sh' 
+          }
+          catchError {
+            sh 'cd build; CONFIG=configH1I1.fti LEVEL=4 ./test/tests.sh' 
+          }
+          catchError {
+            sh 'cd build; CONFIG=configH1I0.fti LEVEL=1 ./test/tests.sh' 
+          }
+          catchError {
+            sh 'cd build; CONFIG=configH1I0.fti LEVEL=2 ./test/tests.sh' 
+          }
+          catchError {
+            sh 'cd build; CONFIG=configH1I0.fti LEVEL=3 ./test/tests.sh' 
+          }
+          catchError {
+            sh 'cd build; CONFIG=configH1I0.fti LEVEL=4 ./test/tests.sh' 
           }
         }
       }
