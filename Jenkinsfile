@@ -11,6 +11,7 @@ pipeline {
           }
         }
         steps {
+        /*
           sh '''
             mkdir build; cd build
             cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
@@ -584,7 +585,7 @@ pipeline {
             sh 'cd build; TEST=cornerCases ./test/tests.sh'
           }
         }
-      }
+      }*/
       stage('Cmake Versions Test') {
         agent {
           docker {
@@ -593,31 +594,20 @@ pipeline {
           }
         }
         steps {
-          sh '''
-            mkdir build; cd build
-            cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
-            make all install
-            '''
-          catchError {
-            sh 'cd build; TEST=diffSizes CONFIG=configH1I0.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=3 CMAKEVERSION=3.3 ./test/tests.sh'
-          }
-          catchError {
-            sh 'cd build; TEST=diffSizes CONFIG=configH1I0.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=3 CMAKEVERSION=3.4 ./test/tests.sh'
-          }
-          catchError {
-            sh 'cd build; TEST=diffSizes CONFIG=configH1I0.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=3 CMAKEVERSION=3.5 ./test/tests.sh'
-          }
-          catchError {
-            sh 'cd build; TEST=diffSizes CONFIG=configH1I0.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=3 CMAKEVERSION=3.6 ./test/tests.sh'
-          }
-          catchError {
-            sh 'cd build; TEST=diffSizes CONFIG=configH1I0.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=3 CMAKEVERSION=3.7 ./test/tests.sh'
-          }
-          catchError {
-            sh 'cd build; TEST=diffSizes CONFIG=configH1I0.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=3 CMAKEVERSION=3.8 ./test/tests.sh'
-          }
-          catchError {
-            sh 'cd build; TEST=diffSizes CONFIG=configH1I0.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=3 CMAKEVERSION=3.9 ./test/tests.sh'
+          versions = [ '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9' ]
+          for (int i = 0; i < versions.size(); i++) {
+            sh '''
+              mkdir build; cd build
+              export CMAKEVERSION=${versions[i]}
+              export CMAKE=/opt/cmake/CMAKEVERSION/bin/cmake
+              echo $CMAKE --version
+              $CMAKE -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
+              make all install
+              '''
+            catchError {
+              sh 'cd build; TEST=diffSizes CONFIG=configH1I0.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=3  ./test/tests.sh'
+            }
+            sh 'rm -rf build'
           }
         }
       }
