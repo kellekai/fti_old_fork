@@ -640,46 +640,46 @@ pipeline {
             sh 'cd build; CONFIG=configH0I1.fti LEVEL=1 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH0I1.fti LEVEL=2 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH0I1.fti LEVEL=2 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH0I1.fti LEVEL=3 PART=0 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH0I1.fti LEVEL=3 PART=0 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH0I1.fti LEVEL=3 PART=1 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH0I1.fti LEVEL=3 PART=1 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH0I1.fti LEVEL=4 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH0I1.fti LEVEL=4 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I1.fti LEVEL=1 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH1I1.fti LEVEL=1 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I1.fti LEVEL=2 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH1I1.fti LEVEL=2 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I1.fti LEVEL=3 PART=0 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH1I1.fti LEVEL=3 PART=0 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I1.fti LEVEL=3 PART=1 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH1I1.fti LEVEL=3 PART=1 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I1.fti LEVEL=4 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH1I1.fti LEVEL=4 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I0.fti LEVEL=1 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH1I0.fti LEVEL=1 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I0.fti LEVEL=2 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH1I0.fti LEVEL=2 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I0.fti LEVEL=3 PART=0 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH1I0.fti LEVEL=3 PART=0 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I0.fti LEVEL=3 PART=1 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH1I0.fti LEVEL=3 PART=1 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
           catchError {
-            sh 'cd build; CONFIG=configH1I0.fti LEVEL=4 ./test/tests.sh'
+            sh 'cd build; CONFIG=configH1I0.fti LEVEL=4 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
         }
       }
