@@ -616,7 +616,23 @@ pipeline {
         }
       }*/
       stage('PGI Compiler Tests') {
-        agent {
+        
+        docker.image('kellekai/archlinuxpgi18:stable').inside() {
+          withEnv(['PATH+EXTRA=$PGICC:$PGIMPICC']) {
+            sh 'echo $PATH'
+          }
+          sh '''
+            export PATH=$PGICC:$PGIMPICC:$PATH
+            echo $PATH
+            ls /opt/pgi/
+            mkdir build; cd build
+            CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
+            make -j 16 all install
+            '''
+        }
+
+        
+        /*agent {
           docker {
             image 'kellekai/archlinuxpgi18:stable'
           }
@@ -683,7 +699,7 @@ pipeline {
           catchError {
             sh 'cd build; CONFIG=configH1I0.fti LEVEL=4 ./test/tests.sh'
           }
-        }
+        }*/
       }
     }
 }
