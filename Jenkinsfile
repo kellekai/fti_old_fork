@@ -3,6 +3,7 @@
 pipeline {
   agent none
     stages {
+        /*
       stage('Standard Tests L1 No Head') {
         agent {
           docker {
@@ -11,7 +12,6 @@ pipeline {
           }
         }
         steps {
-        /*
           sh '''
             mkdir build; cd build
             cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
