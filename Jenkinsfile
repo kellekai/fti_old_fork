@@ -633,7 +633,6 @@ pipeline {
           sh '''
             export PATH=$PGICC:$PGIMPICC
             echo $PATH
-            ls /opt/pgi/
             mkdir build; cd build
             CC=pgcc FC=pgfortran /usr/sbin/cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
             make -j 16 all install
