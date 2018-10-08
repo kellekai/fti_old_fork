@@ -631,7 +631,7 @@ pipeline {
             sh 'echo $PATH'
           }
           sh '''
-            PATH = $PGICC:$PGIMPICC:$PATH
+            export PATH = $PGICC:$PGIMPICC:$PATH
             echo $PATH
             mkdir build; cd build
             CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
