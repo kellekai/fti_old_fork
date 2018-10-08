@@ -697,8 +697,8 @@ pipeline {
         steps {
           sh '''
             mkdir build; cd build
-            . ICCPATH/compilervars.sh
-            . MPICCPATH/mpivars.sh
+            . $ICCPATH/compilervars.sh
+            . $MPICCPATH/mpivars.sh
             $ENVFIX -C ../intel.cmake cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
             make -j 16 all install
             '''
