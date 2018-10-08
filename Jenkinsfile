@@ -21,7 +21,6 @@ def cmakesteps(list) {
 pipeline {
   agent none
     stages {
-        /*
       stage('Standard Tests L1 No Head') {
         agent {
           docker {
@@ -682,7 +681,7 @@ pipeline {
             sh 'cd build; CONFIG=configH1I0.fti LEVEL=4 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
         }
-      }*/
+      }
       stage('Intel Compiler Tests') {
         agent {
           docker {
