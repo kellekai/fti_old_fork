@@ -622,16 +622,18 @@ pipeline {
           }
         }
         environment {
-          PGI = '/opt/pgi'
+          PGICC = '/opt/pgi/linux86-64/18.4/bin/'
+          PGIMPICC = '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/'
           LM_LICENSE_FILE = '$PGI/license.dat'
-          PATH = '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/:/opt/pgi/linux86-64/18.4/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
         }
         steps {
+          withEnv(['PATH+EXTRA=$PGICC:$PGIMPICC']) {
           sh '''
             mkdir build; cd build
             CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
             make -j 16 all install
             '''
+          }
           catchError {
             sh 'cd build; CONFIG=configH0I1.fti LEVEL=1 ./test/tests.sh'
           }
