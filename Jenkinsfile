@@ -616,15 +616,15 @@ pipeline {
         }
       }*/
       stage('PGI Compiler Tests') {
-        env.PGI = '/opt/pgi'
-        env.LM_LICENSE_FILE = '$PGI/license.dat'
-        env.PATH = '$PGI/linux86-64/18.4/bin:$PGI/linux86-64/2018/mpi/openmpi-2.1.2/bin:$PATH'
         agent {
           docker {
             image 'kellekai/archlinuxpgi18'
           }
         }
         steps {
+          env.PGI = '/opt/pgi'
+          env.LM_LICENSE_FILE = '$PGI/license.dat'
+          env.PATH = '$PGI/linux86-64/18.4/bin:$PGI/linux86-64/2018/mpi/openmpi-2.1.2/bin:$PATH'
           sh '''
             mkdir build; cd build
             CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
