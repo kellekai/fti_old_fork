@@ -624,7 +624,7 @@ pipeline {
         environment {
           PGI = '/opt/pgi'
           LM_LICENSE_FILE = '$PGI/license.dat'
-          PATH+EXTRA = '$PGI/linux86-64/18.4/bin:$PGI/linux86-64/2018/mpi/openmpi-2.1.2/bin'
+          PATH = '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/:/opt/pgi/linux86-64/18.4/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
         }
         steps {
           sh '''
