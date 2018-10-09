@@ -32,7 +32,7 @@ pipeline {
           sh '''
             mkdir build; cd build
             cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
-            make all install
+            make -j 16 all install
             '''
           catchError {
             sh 'cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=1 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ./test/tests.sh'
@@ -62,7 +62,7 @@ pipeline {
           sh '''
             mkdir build; cd build
             cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
-            make all install
+            make -j 16 all install
             '''
           catchError {
             sh 'cd build; TEST=diffSizes CONFIG=configH1I1.fti LEVEL=1 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ./test/tests.sh'
@@ -101,7 +101,7 @@ pipeline {
           sh '''
             mkdir build; cd build
             cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
-            make all install
+            make -j 16 all install
             '''
           catchError {
             sh 'cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=2 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ./test/tests.sh'
@@ -170,7 +170,7 @@ pipeline {
           sh '''
             mkdir build; cd build
             cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
-            make all install
+            make -j 16 all install
             '''
           catchError {
             sh 'cd build; TEST=diffSizes CONFIG=configH1I1.fti LEVEL=2 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ./test/tests.sh'
@@ -293,7 +293,7 @@ pipeline {
           sh '''
             mkdir build; cd build
             cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
-            make all install
+            make -j 16 all install
             '''
           catchError {
             sh 'cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ./test/tests.sh'
@@ -362,7 +362,7 @@ pipeline {
           sh '''
             mkdir build; cd build
             cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
-            make all install
+            make -j 16 all install
             '''
           catchError {
             sh 'cd build; TEST=diffSizes CONFIG=configH1I1.fti LEVEL=3 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ./test/tests.sh'
@@ -506,7 +506,7 @@ pipeline {
           sh '''
             mkdir build; cd build
             cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
-            make all install
+            make -j 16 all install
             '''
           catchError {
             sh 'cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=4 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ./test/tests.sh'
@@ -533,7 +533,7 @@ pipeline {
           sh '''
             mkdir build; cd build
             cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
-            make all install
+            make -j 16 all install
             '''
           catchError {
             sh 'cd build; TEST=diffSizes CONFIG=configH1I1.fti LEVEL=4 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ./test/tests.sh'
@@ -572,7 +572,7 @@ pipeline {
           sh '''
             mkdir build; cd build
             cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_FORTRAN=OFF ..
-            make all install
+            make -j 16 all install
             '''
           catchError {
             sh 'cd build; TEST=heatdis CONFIG=configH0I1.fti ./test/tests.sh'
