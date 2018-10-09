@@ -497,7 +497,7 @@ pipeline {
       stage('Clang Compiler Tests') {
         agent {
           docker {
-            image 'kellekai/archlinuxclang'
+            image 'kellekai/archlinuxopenmpi10:stable'
             //reuseNode true
           }
         }
