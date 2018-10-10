@@ -9,7 +9,7 @@ def executeSteps_one( arg1, arg2 ) {
       echo $PATH
       cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=1 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ./test/tests.sh
       '''
-  }
+  }/*
   catchError {
     sh '''
       export PATH=$PATHA:$PATHB:$PATH
@@ -583,7 +583,7 @@ def executeSteps_one( arg1, arg2 ) {
       echo $PATH
       cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=3 CKPTORPTNER=1 CORRORERASE=1 CORRUPTIONLEVEL=3 ./test/tests.sh
       '''
-  }
+  }*/
 }
 
 def executionSteps_two( arg1, arg2, ) {
@@ -1097,7 +1097,7 @@ pipeline {
             make -j 16 all install
           '''
           executeSteps_one( '', '' )
-          executeSteps_two( '', '' )
+          //executeSteps_two( '', '' )
         }
       }/*
       stage('Clang Compiler Tests') {
