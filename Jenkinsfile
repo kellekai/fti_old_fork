@@ -586,7 +586,7 @@ def executeSteps_one( arg1, arg2 ) {
   }*/
 }
 
-def executionSteps_two( arg1, arg2, ) {
+def executionSteps_two( arg1, arg2 ) {
   env.PATHA = arg1 
   env.PATHB = arg2
   catchError {
