@@ -1087,7 +1087,7 @@ pipeline {
       stage('GCC Compiler Tests (1/2)') {
         agent {
           docker {
-            image 'kellekai/archlinuxopenmpi1.10'
+            image 'kellekai/archlinuxopenmpi1.10:stable'
           }
         }
         steps {
@@ -1102,7 +1102,7 @@ pipeline {
       stage('GCC Compiler Tests (2/2)') {
         agent {
           docker {
-            image 'kellekai/archlinuxopenmpi1.10'
+            image 'kellekai/archlinuxopenmpi1.10:stable'
           }
         }
         steps {
