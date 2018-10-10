@@ -595,7 +595,7 @@ def executionSteps_two( arg1, arg2 ) {
       echo $PATH
       cd build; TEST=diffSizes NOTCORRUPT=1 CONFIG=configH0I1.fti LEVEL=3 ./test/tests.sh
       '''
-  }
+  }/*
   catchError {
     sh '''
       export PATH=$PATHA:$PATHB:$PATH
@@ -1050,7 +1050,7 @@ def executionSteps_two( arg1, arg2 ) {
       echo $PATH
       cd build; TEST=cornerCases ./test/tests.sh
       '''
-  }
+  }*/
 }
 
 versions = [ '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9' ]
@@ -1074,7 +1074,7 @@ def cmakesteps(list) {
 pipeline {
   agent none
     stages {
-      /*stage('Cmake Versions Test') {
+      stage('Cmake Versions Test') {
         agent {
           docker {
             image 'kellekai/archlinuxopenmpi1.10'
@@ -1083,8 +1083,8 @@ pipeline {
         steps {
           cmakesteps(versions)
         }
-      }*/
-      stage('GCC Compiler Tests') {
+      }
+      stage('GCC Compiler Tests (1/2)') {
         agent {
           docker {
             image 'kellekai/archlinuxopenmpi1.10'
@@ -1097,10 +1097,24 @@ pipeline {
             make -j 16 all install
           '''
           executeSteps_one( '', '' )
-          //executeSteps_two( '', '' )
         }
       }
-      stage('Clang Compiler Tests') {
+      stage('GCC Compiler Tests (2/2)') {
+        agent {
+          docker {
+            image 'kellekai/archlinuxopenmpi1.10'
+          }
+        }
+        steps {
+          sh '''
+            mkdir build; cd build
+            cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
+            make -j 16 all install
+          '''
+          executeSteps_two( '', '' )
+        }
+      }
+      stage('Clang Compiler Tests (1/2)') {
         agent {
           docker {
             image 'kellekai/archlinuxopenmpi1.10:stable'
@@ -1115,10 +1129,26 @@ pipeline {
             VERBOSE=1 make -j 16 all install
           '''
           executeSteps_one( '', '' )
-          //executeSteps_two( '', '' )
         }
       }
-      stage('PGI Compiler Tests') {
+      stage('Clang Compiler Tests (2/2)') {
+        agent {
+          docker {
+            image 'kellekai/archlinuxopenmpi1.10:stable'
+          }
+        }
+        steps {
+          sh '''
+            mkdir build; cd build
+            export OMPI_MPICC=clang
+            export OMPI_CXX=clang++
+            CC=clang FC=gfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
+            VERBOSE=1 make -j 16 all install
+          '''
+          executeSteps_two( '', '' )
+        }
+      }
+      stage('PGI Compiler Tests (1/2)') {
         agent {
           docker {
             image 'kellekai/archlinuxpgi18:stable'
@@ -1140,10 +1170,33 @@ pipeline {
             make -j 16 all install
           '''
           executeSteps_one( '/opt/pgi/linux86-64/18.4/bin/', '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/' )
-          //executeSteps_two( '/opt/pgi/linux86-64/18.4/bin/', '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/' )
         }
       }
-      stage('Intel Compiler Tests') {
+      stage('PGI Compiler Tests (2/2)') {
+        agent {
+          docker {
+            image 'kellekai/archlinuxpgi18:stable'
+          }
+        }
+        environment {
+          PGICC = '/opt/pgi/linux86-64/18.4/bin/'
+          PGIMPICC = '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/'
+          LM_LICENSE_FILE = '$PGI/license.dat'
+          LD_LIBRARY_PATH = '/opt/pgi/linux86-64/18.4/lib'
+        }
+        steps {
+          sh '''
+            export PATH=$PGICC:$PGIMPICC:$PATH
+            echo $PATH
+            ls /opt/pgi/
+            mkdir build; cd build
+            CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
+            make -j 16 all install
+          '''
+          executeSteps_two( '/opt/pgi/linux86-64/18.4/bin/', '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/' )
+        }
+      }
+      stage('Intel Compiler Tests (1/2)') {
         agent {
           docker {
             image 'kellekai/archlinuximpi18:stable'
@@ -1163,7 +1216,28 @@ pipeline {
             make -j 16 all install
           '''
           executeSteps_one( '/opt/intel/compilers_and_libraries_2018.3.222/linux/mpi/intel64/bin', '' )
-          //executeSteps_two( '/opt/intel/compilers_and_libraries_2018.3.222/linux/mpi/intel64/bin', '' )
+        }
+      }
+      stage('Intel Compiler Tests (2/2)') {
+        agent {
+          docker {
+            image 'kellekai/archlinuximpi18:stable'
+          }
+        }
+        environment {
+          CFLAGS_FIX = '-D__PURE_INTEL_C99_HEADERS__ -D_Float32=float -D_Float64=double -D_Float32x=_Float64 -D_Float64x=_Float128'
+          ICCPATH = '/opt/intel/compilers_and_libraries_2018.3.222/linux/bin'
+          MPICCPATH = '/opt/intel/compilers_and_libraries_2018.3.222/linux/mpi/intel64/bin'
+        }
+        steps {
+          sh '''
+            mkdir build; cd build
+            . $ICCPATH/compilervars.sh intel64
+            . $MPICCPATH/mpivars.sh
+            CFLAGS=$CFLAGS_FIX cmake -C ../intel.cmake cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
+            make -j 16 all install
+          '''
+          executeSteps_two( '/opt/intel/compilers_and_libraries_2018.3.222/linux/mpi/intel64/bin', '' )
         }
       }
     }
