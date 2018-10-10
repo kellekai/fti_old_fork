@@ -1074,7 +1074,7 @@ def cmakesteps(list) {
 pipeline {
   agent none
     stages {
-      stage('Cmake Versions Test') {
+      /*stage('Cmake Versions Test') {
         agent {
           docker {
             image 'kellekai/archlinuxopenmpi1.10'
@@ -1083,7 +1083,7 @@ pipeline {
         steps {
           cmakesteps(versions)
         }
-      }
+      }*/
       stage('GCC Compiler Tests (1/2)') {
         agent {
           docker {
