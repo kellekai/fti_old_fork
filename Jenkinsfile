@@ -1,8 +1,13 @@
 #!/bin/groovy
 
-def executeSteps_one( add_env ) {
+def executeSteps_one( arg1, arg2 ) {
+  env.PATHA = arg1 
+  env.PATHB = arg2 
   catchError {
-    sh 'cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=1 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 $add_env ./test/tests.sh'
+    sh '''
+      export PATH=$PATHA:$PATH2:$PATH
+      cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=1 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ./test/tests.sh
+      '''
   }
   /*catchError {
     sh 'cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=1 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ${add_env} ./test/tests.sh'
@@ -540,7 +545,7 @@ pipeline {
             CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE ..
             make -j 16 all install
             '''
-          executeSteps_one( 'PATH=$PGICC:$PGIMPICC:$PATH' )
+          executeSteps_one( '/opt/pgi/linux86-64/18.4/bin/', '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/' )
           /*catchError {
             sh 'cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=1 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 PATH=$PGICC:$PGIMPICC:$PATH ./test/tests.sh'
           }
