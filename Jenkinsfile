@@ -1099,7 +1099,7 @@ pipeline {
           executeSteps_one( '', '' )
           //executeSteps_two( '', '' )
         }
-      }/*
+      }
       stage('Clang Compiler Tests') {
         agent {
           docker {
@@ -1115,7 +1115,7 @@ pipeline {
             VERBOSE=1 make -j 16 all install
           '''
           executeSteps_one( '', '' )
-          executeSteps_two( '', '' )
+          //executeSteps_two( '', '' )
         }
       }
       stage('PGI Compiler Tests') {
@@ -1140,7 +1140,7 @@ pipeline {
             make -j 16 all install
           '''
           executeSteps_one( '/opt/pgi/linux86-64/18.4/bin/', '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/' )
-          executeSteps_two( '/opt/pgi/linux86-64/18.4/bin/', '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/' )
+          //executeSteps_two( '/opt/pgi/linux86-64/18.4/bin/', '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/' )
         }
       }
       stage('Intel Compiler Tests') {
@@ -1163,8 +1163,8 @@ pipeline {
             make -j 16 all install
           '''
           executeSteps_one( '/opt/intel/compilers_and_libraries_2018.3.222/linux/mpi/intel64/bin', '' )
-          executeSteps_two( '/opt/intel/compilers_and_libraries_2018.3.222/linux/mpi/intel64/bin', '' )
+          //executeSteps_two( '/opt/intel/compilers_and_libraries_2018.3.222/linux/mpi/intel64/bin', '' )
         }
-      }*/
+      }
     }
 }
