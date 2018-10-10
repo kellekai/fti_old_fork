@@ -1093,7 +1093,7 @@ pipeline {
         steps {
           sh '''
             mkdir build; cd build
-            cmake -DCMAKE_INSTALL_PREFIX=`pwd`/ -DENABLE_HDF5=ON ..
+            cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_HDF5=ON ..
             make -j 16 all install
           '''
           executeSteps_one( '', '' )
@@ -1108,7 +1108,7 @@ pipeline {
         steps {
           sh '''
             mkdir build; cd build
-            cmake -DCMAKE_INSTALL_PREFIX=`pwd`/ -DENABLE_HDF5=ON ..
+            cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_HDF5=ON ..
             make -j 16 all install
           '''
           executeSteps_two( '', '' )
@@ -1125,7 +1125,7 @@ pipeline {
             mkdir build; cd build
             export OMPI_MPICC=clang
             export OMPI_CXX=clang++
-            CC=clang FC=gfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/ -DENABLE_HDF5=ON ..
+            CC=clang FC=gfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_HDF5=ON ..
             VERBOSE=1 make -j 16 all install
           '''
           executeSteps_one( '', '' )
@@ -1142,7 +1142,7 @@ pipeline {
             mkdir build; cd build
             export OMPI_MPICC=clang
             export OMPI_CXX=clang++
-            CC=clang FC=gfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/ -DENABLE_HDF5=ON ..
+            CC=clang FC=gfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_HDF5=ON ..
             VERBOSE=1 make -j 16 all install
           '''
           executeSteps_two( '', '' )
@@ -1166,7 +1166,7 @@ pipeline {
             echo $PATH
             ls /opt/pgi/
             mkdir build; cd build
-            CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/ -DENABLE_HDF5=ON ..
+            CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_HDF5=ON ..
             make -j 16 all install
           '''
           executeSteps_one( '/opt/pgi/linux86-64/18.4/bin/', '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/' )
@@ -1190,7 +1190,7 @@ pipeline {
             echo $PATH
             ls /opt/pgi/
             mkdir build; cd build
-            CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/ -DENABLE_HDF5=ON ..
+            CC=pgcc FC=pgfortran cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_HDF5=ON ..
             make -j 16 all install
           '''
           executeSteps_two( '/opt/pgi/linux86-64/18.4/bin/', '/opt/pgi/linux86-64/2018/mpi/openmpi-2.1.2/bin/' )
@@ -1212,7 +1212,7 @@ pipeline {
             mkdir build; cd build
             . $ICCPATH/compilervars.sh intel64
             . $MPICCPATH/mpivars.sh
-            CFLAGS=$CFLAGS_FIX cmake -C ../intel.cmake cmake -DCMAKE_INSTALL_PREFIX=`pwd`/ -DENABLE_HDF5=ON ..
+            CFLAGS=$CFLAGS_FIX cmake -C ../intel.cmake cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_HDF5=ON ..
             make -j 16 all install
           '''
           executeSteps_one( '/opt/intel/compilers_and_libraries_2018.3.222/linux/mpi/intel64/bin', '' )
@@ -1234,7 +1234,7 @@ pipeline {
             mkdir build; cd build
             . $ICCPATH/compilervars.sh intel64
             . $MPICCPATH/mpivars.sh
-            CFLAGS=$CFLAGS_FIX cmake -C ../intel.cmake cmake -DCMAKE_INSTALL_PREFIX=`pwd`/ -DENABLE_HDF5=ON ..
+            CFLAGS=$CFLAGS_FIX cmake -C ../intel.cmake cmake -DCMAKE_INSTALL_PREFIX=`pwd`/RELEASE -DENABLE_HDF5=ON ..
             make -j 16 all install
           '''
           executeSteps_two( '/opt/intel/compilers_and_libraries_2018.3.222/linux/mpi/intel64/bin', '' )
