@@ -2,9 +2,9 @@
 
 def executeSteps_one( add_env ) {
   catchError {
-    sh 'cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=1 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ${add_env} ./test/tests.sh'
+    sh 'cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=1 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 $add_env ./test/tests.sh'
   }
-  catchError {
+  /*catchError {
     sh 'cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=1 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ${add_env} ./test/tests.sh'
   }
   catchError {
@@ -249,7 +249,7 @@ def executeSteps_one( add_env ) {
   }
   catchError {
     sh 'cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=3 CKPTORPTNER=1 CORRORERASE=1 CORRUPTIONLEVEL=3 ${add_env} ./test/tests.sh'
-  }
+  }*/
 }
 
 def executionSteps_two() {
@@ -990,7 +990,7 @@ pipeline {
           }*/
         }
       }
-      stage('Intel Compiler Tests') {
+      /*stage('Intel Compiler Tests') {
         agent {
           docker {
             image 'kellekai/archlinuximpi18:stable'
@@ -1457,6 +1457,6 @@ pipeline {
             sh 'cd build; TEST=cornerCases PATH=$MPICCPATH:$PATH ./test/tests.sh'
           }
         }
-      }
+      }*/
     }
 }
