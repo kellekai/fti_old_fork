@@ -9,7 +9,7 @@ def executeSteps_one( arg1, arg2 ) {
       echo $PATH
       cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=1 CKPTORPTNER=0 CORRORERASE=0 CORRUPTIONLEVEL=0 ./test/tests.sh
       '''
-  }/*
+  }
   catchError {
     sh '''
       export PATH=$PATHA:$PATHB:$PATH
@@ -583,7 +583,7 @@ def executeSteps_one( arg1, arg2 ) {
       echo $PATH
       cd build; TEST=diffSizes CONFIG=configH0I1.fti LEVEL=3 CKPTORPTNER=1 CORRORERASE=1 CORRUPTIONLEVEL=3 ./test/tests.sh
       '''
-  }*/
+  }
 }
 
 def executeSteps_two( arg1, arg2 ) {
@@ -595,7 +595,7 @@ def executeSteps_two( arg1, arg2 ) {
       echo $PATH
       cd build; TEST=diffSizes NOTCORRUPT=1 CONFIG=configH0I1.fti LEVEL=3 ./test/tests.sh
       '''
-  }/*
+  }
   catchError {
     sh '''
       export PATH=$PATHA:$PATHB:$PATH
@@ -1036,21 +1036,21 @@ def executeSteps_two( arg1, arg2 ) {
       echo $PATH
       cd build; TEST=syncIntv CONFIG=configH1I0.fti ./test/tests.sh
       '''
-  }*/
+  }
   catchError {
     sh '''
       export PATH=$PATHA:$PATHB:$PATH
       echo $PATH
       cd build; TEST=hdf5 ./test/tests.sh
       '''
-  }/*
+  }
   catchError {
     sh '''
       export PATH=$PATHA:$PATHB:$PATH
       echo $PATH
       cd build; TEST=cornerCases ./test/tests.sh
       '''
-  }*/
+  }
 }
 
 versions = [ '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9' ]
@@ -1074,7 +1074,7 @@ def cmakesteps(list) {
 pipeline {
   agent none
     stages {
-      /*stage('Cmake Versions Test') {
+      stage('Cmake Versions Test') {
         agent {
           docker {
             image 'kellekai/archlinuxopenmpi1.10'
@@ -1083,7 +1083,7 @@ pipeline {
         steps {
           cmakesteps(versions)
         }
-      }*/
+      }
       stage('GCC Compiler Tests (1/2)') {
         agent {
           docker {
